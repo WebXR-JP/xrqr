@@ -1,0 +1,91 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: bold;
+  color: #333;
+}
+
+.textArea {
+  min-height: 150px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.pinInput {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  width: 120px;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.generateButton {
+  padding: 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generateButton:hover {
+  background-color: #1d4ed8;
+}
+
+.generateButton:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.qrContainer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error {
+  color: #dc2626;
+  text-align: center;
+  margin-top: 1rem;
+}

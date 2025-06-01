@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
-declare module '*.module.css' {
-  const classes: { [key: string]: string };
-  export default classes;
+interface Navigator {
+  xr?: {
+    isSessionSupported(mode: string): Promise<boolean>;
+    requestSession(mode: string, options?: any): Promise<any>;
+  };
 }

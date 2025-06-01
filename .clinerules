@@ -1,0 +1,423 @@
+# Quest 用 QRコード文字列同期システム 仕様書
+
+## 1. プロダクト概要
+
+Quest のテキスト入力困難問題を解決するため、PC/スマホで生成したQRコードをQuest のパススルーカメラで読み取り、クリップボードに同期するWebアプリケーション。4桁数字による暗号化でセキュリティを確保し、非秘匿情報は履歴として保存。
+
+## 2. システム構成
+
+**URL**: https://xrqr.net
+
+### 2.1 デバイス自動判定システム
+- **XRデバイス検出**: WebXR Device API の availability check
+- **自動分岐**: デバイス判定結果に基づいて適切なUIを表示
+
+### 2.2 アプリケーション構成
+- **送信側**: PC/スマホ用 Webアプリ（QRコード生成 + 暗号化）
+- **受信側**: XRデバイス（Quest等）用 Webアプリ（パススルーカメラ + QRコード読み取り + 復号化 + 履歴管理）
+
+## 3. 機能仕様
+
+### 3.1 デバイス判定ロジック
+
+```typescript
+// XRデバイス判定例
+async function detectXRDevice(): Promise<boolean> {
+  if ('xr' in navigator) {
+    const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+    return isSupported;
+  }
+  return false;
+}
+```
+
+- **XRデバイス**: 受信側UI（カメラ機能）を表示
+- **PC/スマホ**: 送信側UI（QRコード生成）を表示
+
+### 3.2 送信側（PC/スマホ）
+
+- **入力フィールド**: テキスト入力エリア
+- **暗号化キー入力**: 4桁数字入力フィールド
+- **秘匿情報フラグ**: チェックボックス「パスワード等の秘匿情報」
+- **生成ボタン**: クリック時に暗号化 → QRコード生成
+- **QRコード表示**: 暗号化されたデータのQRコードを表示
+
+### 3.3 受信側（XRデバイス）
+
+- **初期設定**: 4桁数字キーを一度だけ設定（ローカルストレージ保存）
+- **カメラアクセス**: パススルーカメラAPI使用
+- **QRコード読み取り**: 暗号化データの検出・デコード
+- **自動復号化**: 保存済み4桁キーで復号化
+- **履歴保存判定**: 秘匿情報フラグに基づいて履歴保存を制御
+- **クリップボード操作**: 復号化した文字列をクリップボードにコピー
+- **履歴表示**: 過去の読み取り履歴一覧（秘匿情報以外）
+- **履歴操作**: 履歴から再選択でクリップボードコピー、個別削除
+- **エラーハンドリング**: キー不一致時のエラー表示
+
+### 3.4 履歴機能詳細
+
+- **保存対象**: 秘匿情報フラグがOFFの文字列のみ
+- **保存内容**: 文字列、読み取り日時、文字列の先頭50文字（プレビュー用）
+- **保存先**: XRデバイスブラウザのローカルストレージ
+- **表示順**: 新しい順
+- **削除機能**: 個別削除、全履歴削除
+
+## 4. データ構造
+
+### 4.1 暗号化ペイロード
+
+```json
+{
+  "content": "実際の文字列",
+  "isSecret": boolean,
+  "timestamp": "2025-06-02T10:30:00Z"
+}
+```
+
+### 4.2 履歴データ
+
+```json
+{
+  "id": "unique_id",
+  "content": "復号化された文字列",
+  "preview": "文字列の先頭50文字",
+  "timestamp": "2025-06-02T10:30:00Z"
+}
+```
+
+## 5. 暗号化仕様
+
+- **暗号化方式**: AES-256-GCM
+- **キー生成**: 4桁数字をSHA-256でハッシュ化して32バイトキー生成
+- **ライブラリ**: CryptoJS または Web Crypto API
+- **対応文字数**: URL等が確実に送信できる長さ（推奨: 2000文字程度、暗号化後のサイズ考慮）
+
+## 6. 技術要件
+
+### 6.1 共通技術スタック
+
+- **フロントエンド**: React 18+ + TypeScript
+- **状態管理**: React Hooks (useState, useEffect, useContext)
+- **暗号化**: CryptoJS または Web Crypto API
+- **ビルドツール**: Vite + React
+
+### 6.2 推奨ライブラリ
+
+```json
+{
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0",
+  "typescript": "^5.0.0",
+  "@types/react": "^18.2.0",
+  "@types/react-dom": "^18.2.0",
+  "qrcode": "^1.5.3",
+  "jsqr": "^1.4.0",
+  "crypto-js": "^4.1.1",
+  "@types/crypto-js": "^4.1.1",
+  "vite": "^4.4.0",
+  "@vitejs/plugin-react": "^4.0.0"
+}
+```
+
+### 6.3 送信側（PC/スマホ）
+
+- **QRコード生成**: qrcode.js
+- **UI**: Tailwind CSS + Reactコンポーネント
+- **対応ブラウザ**: Chrome 88+, Firefox 85+, Safari 14+, Edge 88+
+
+### 6.4 受信側（XRデバイス）
+
+- **XR判定**: WebXR Device API availability check
+- **QRコード読み取り**: jsQR + WebRTC
+- **カメラアクセス**: WebXR Device API（パススルーカメラ）
+- **ストレージ**: localStorage（React Hooks経由）
+- **クリップボード**: Clipboard API
+- **対応デバイス**: Meta Quest 2/3/Pro（ブラウザ版）
+
+## 7. UI/UX
+
+### 7.1 ランディングページ（共通）
+
+- xrqr.net アクセス時の初期画面
+- デバイス判定中のローディング表示
+- 自動分岐による適切なUIへの遷移
+
+### 7.2 送信側（PC/スマホ）
+
+1. テキスト入力エリア
+2. 4桁数字キー入力
+3. 「パスワード等の秘匿情報」チェックボックス
+4. 「QRコード生成」ボタン
+5. QRコード表示エリア
+
+### 7.3 受信側（XRデバイス）
+
+#### 初回起動時
+1. 4桁数字キー設定画面
+
+#### メイン画面
+1. タブ切り替え（カメラ/履歴）
+2. **カメラタブ**: パススルーカメラビュー + 読み取り状態表示
+3. **履歴タブ**: 履歴一覧 + 個別操作ボタン
+
+## 8. 技術実装詳細
+
+### 8.1 React コンポーネント構成
+
+```
+src/
+├── components/
+│   ├── DeviceDetector.tsx      # デバイス判定ロジック
+│   ├── SenderInterface.tsx     # 送信側UI
+│   ├── XRInterface.tsx         # XR受信側UI
+│   ├── QRGenerator.tsx         # QRコード生成
+│   ├── QRScanner.tsx           # QRコード読み取り
+│   ├── HistoryList.tsx         # 履歴表示
+│   └── EncryptionService.ts    # 暗号化ロジック
+├── hooks/
+│   ├── useXRDetection.ts       # XRデバイス判定Hook
+│   ├── useQRScanner.ts         # QRスキャナーHook
+│   ├── useLocalStorage.ts      # ローカルストレージHook
+│   └── useEncryption.ts        # 暗号化Hook
+├── types/
+│   └── index.ts               # TypeScript型定義
+└── App.tsx
+```
+
+### 8.2 React Hooks実装例
+
+```typescript
+// useXRDetection.ts
+import { useState, useEffect } from 'react';
+
+export const useXRDetection = () => {
+  const [isXRDevice, setIsXRDevice] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const detectXR = async () => {
+      if ('xr' in navigator) {
+        try {
+          const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+          setIsXRDevice(isSupported);
+        } catch {
+          setIsXRDevice(false);
+        }
+      } else {
+        setIsXRDevice(false);
+      }
+    };
+
+    detectXR();
+  }, []);
+
+  return isXRDevice;
+};
+```
+
+```typescript
+// useQRScanner.ts
+import { useRef, useEffect, useState } from 'react';
+import jsQR from 'jsqr';
+
+export const useQRScanner = (onScan: (data: string) => void) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const startScanning = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setIsScanning(true);
+        scanFrame();
+      }
+    } catch (error) {
+      console.error('Camera access failed:', error);
+    }
+  };
+
+  const scanFrame = () => {
+    if (!videoRef.current || !canvasRef.current || !isScanning) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = context?.getImageData(0, 0, canvas.width, canvas.height);
+      if (imageData) {
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if (code) {
+          onScan(code.data);
+          setIsScanning(false);
+          return;
+        }
+      }
+    }
+
+    requestAnimationFrame(scanFrame);
+  };
+
+  return { videoRef, canvasRef, startScanning, isScanning };
+};
+```
+
+### 8.3 TypeScript型定義
+
+```typescript
+// types/index.ts
+export interface EncryptedPayload {
+  content: string;
+  isSecret: boolean;
+  timestamp: string;
+}
+
+export interface HistoryItem {
+  id: string;
+  content: string;
+  preview: string;
+  timestamp: string;
+}
+
+export interface AppState {
+  encryptionKey: string;
+  history: HistoryItem[];
+  isXRDevice: boolean | null;
+}
+```
+
+### 8.4 フォールバック対応
+
+- WebXR未対応ブラウザでも送信側として機能
+- XR判定失敗時はユーザーが手動選択可能なUI提供
+
+## 9. セキュリティ考慮事項
+
+- 4桁数字キーはハッシュ化してローカル保存
+- 秘匿情報は履歴に保存しない
+- QRコード表示後は送信側で自動クリア（オプション）
+- 暗号化通信でネットワーク盗聴を防止
+
+## 10. エラーハンドリング
+
+- **デバイス判定失敗**: 手動選択UIを表示
+- **WebXR未対応**: 「このデバイスはXR機能に対応していません（送信側として利用可能）」
+- **キー不一致**: 「復号化に失敗しました。キーを確認してください」
+- **QRコード読み取り失敗**: 「QRコードが読み取れません」
+- **カメラアクセス失敗**: 「カメラにアクセスできません」
+- **クリップボードアクセス失敗**: 「クリップボードにコピーできませんでした」
+
+## 11. 開発・デプロイメント要件
+
+### 11.1 開発環境
+
+```bash
+# 推奨Node.jsバージョン
+node >= 18.0.0
+npm >= 8.0.0
+
+# プロジェクト初期化
+npm create vite@latest xrqr --template react-ts
+cd xrqr
+npm install
+
+# 追加パッケージインストール
+npm install qrcode jsqr crypto-js tailwindcss
+npm install -D @types/qrcode @types/crypto-js
+
+# 開発サーバー起動
+npm run dev
+
+# 本番ビルド
+npm run build
+```
+
+### 11.2 Vite設定例
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    https: true, // WebXR, Camera API 動作に必要
+    host: '0.0.0.0',
+    port: 3000
+  },
+  build: {
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          crypto: ['crypto-js'],
+          qr: ['qrcode', 'jsqr']
+        }
+      }
+    }
+  }
+})
+```
+
+### 11.3 デプロイメント
+
+- **HTTPS必須**: WebXR、カメラアクセス、クリップボードAPIはHTTPS環境でのみ動作
+- **CSP設定**: カメラアクセスを許可するContent Security Policy設定
+- **CORS設定**: 必要に応じてCORS設定（同一オリジンの場合は不要）
+
+### 11.4 パフォーマンス考慮事項
+
+- **QRコード読み取りフレームレート**: 30fps以下に制限（バッテリー消費対策）
+- **React最適化**: useCallback, useMemo, React.memo の適切な使用
+- **コード分割**: React.lazy() による動的インポート
+- **履歴データサイズ制限**: localStorage 5MB制限を考慮
+- **メモリ使用量**: カメラストリーム処理時のメモリリーク対策
+
+### 11.5 テスト要件
+
+- **単体テスト**: Jest + React Testing Library
+- **暗号化テスト**: 暗号化/復号化ロジックのテスト
+- **Hookテスト**: カスタムHooksのテスト
+- **コンポーネントテスト**: UIコンポーネントのテスト
+- **結合テスト**: QRコード生成→読み取り→復号化フロー
+- **デバイステスト**: Quest実機でのパススルーカメラ動作確認
+- **ブラウザテスト**: Chrome、Firefox、Safari対応確認
+
+## 12. 制約事項・注意点
+
+### 12.1 技術的制約
+
+- **Quest ブラウザ制限**: パススルーカメラAPIは40%のユーザーに段階リリース中
+- **バッテリー消費**: カメラ常時アクセスによる消費増加
+- **QRコード読み取り距離**: 最適な読み取り距離は30cm〜1m程度
+
+### 12.2 セキュリティ制約
+
+- **4桁PIN強度**: 10,000通りの組み合わせ（ブルートフォース対策要検討）
+- **ローカルストレージ**: ブラウザデータクリア時に履歴消失
+- **暗号化ペイロード**: QRコード容量制限により長文は分割必要
+
+### 12.3 UX制約
+
+- **Quest UI操作**: 手でのタッチ操作が主体（コントローラー非推奨）
+- **文字表示**: Quest の解像度を考慮したフォントサイズ調整必要
+
+## 13. 今後の拡張可能性
+
+- 複数QRコードによる長文分割送信
+- キー管理の強化（定期変更等）
+- 履歴のカテゴリ分類
+- 履歴の検索機能
+- 他のXRデバイス対応（Vision Pro、HoloLens等）
+- バックアップ・同期機能
+- PWA対応（オフライン利用）

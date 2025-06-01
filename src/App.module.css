@@ -1,0 +1,21 @@
+.container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.header {
+  background-color: #1e40af;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.main {
+  padding: 1rem;
+}
