@@ -52,10 +52,33 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
+  width: 280px;
+  height: 280px;
   border: 2px solid #2563eb;
   border-radius: 1rem;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.scanOverlay::before,
+.scanOverlay::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-color: #2563eb;
+  border-style: solid;
+}
+
+.scanOverlay::before {
+  top: -2px;
+  left: -2px;
+  border-width: 4px 0 0 4px;
+}
+
+.scanOverlay::after {
+  bottom: -2px;
+  right: -2px;
+  border-width: 0 4px 4px 0;
 }
 
 .historyContainer {
