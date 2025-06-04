@@ -5,10 +5,29 @@ export const useXRDetection = () => {
 
   useEffect(() => {
     const detectXR = async () => {
-      if ('xr' in navigator) {
+      // PCのブラウザでもWebXR APIが利用可能な場合があるため、
+      // より厳密な判定を行う
+      if ('xr' in navigator && 'userAgent' in navigator) {
         try {
-          const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
-          setIsXRDevice(isSupported);
+          const userAgent = navigator.userAgent.toLowerCase();
+          // Questのブラウザを判定
+          const isQuestBrowser = userAgent.includes('quest') ||
+                                userAgent.includes('oculus') ||
+                                userAgent.includes('meta');
+
+          if (!isQuestBrowser) {
+            setIsXRDevice(false);
+            return;
+          }
+
+          // VRとパススルーカメラの両方のサポートを確認
+          const [isVRSupported, isPassthroughSupported] = await Promise.all([
+            navigator.xr?.isSessionSupported('immersive-vr') ?? false,
+            navigator.xr?.isSessionSupported('immersive-ar') ?? false
+          ]);
+
+          // 両方サポートされている場合のみtrueを返す
+          setIsXRDevice(isVRSupported && isPassthroughSupported);
         } catch {
           setIsXRDevice(false);
         }

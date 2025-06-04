@@ -20,6 +20,12 @@
   text-align: center;
 }
 
+.info {
+  color: #2563eb;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 .manualSelect {
   display: flex;
   flex-direction: column;

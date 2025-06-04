@@ -12,6 +12,8 @@ export const DeviceDetector: React.FC<DeviceDetectorProps> = ({ onDeviceTypeSele
   const isXRDevice = useXRDetection();
   const [manualSelect, setManualSelect] = useState(false);
 
+  console.log('DeviceDetector rendered, isXRDevice:', isXRDevice);
+
   useEffect(() => {
     if (isXRDevice !== null && !manualSelect) {
       onDeviceTypeSelect(isXRDevice ? 'receiver' : 'sender');
@@ -28,13 +30,11 @@ export const DeviceDetector: React.FC<DeviceDetectorProps> = ({ onDeviceTypeSele
 
   return (
     <div className={styles.container}>
-      {isXRDevice ? (
-        <div className={styles.error}>
-          このデバイスはXR機能に対応していません
-          <br />
-          送信側として利用可能です
+      {isXRDevice ? null : (
+        <div className={styles.info}>
+          このデバイスは送信側として利用可能です
         </div>
-      ) : null}
+      )}
       <div className={styles.manualSelect}>
         <button
           className={styles.button}
