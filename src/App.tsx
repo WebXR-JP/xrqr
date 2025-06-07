@@ -1,6 +1,6 @@
 import styles from './App.module.css';
 
-type DeviceType = 'sender' | 'receiver' | null;
+// type DeviceType = 'sender' | 'receiver' | null;
 
 export const App = () => {
   // const [deviceType, setDeviceType] = useState<DeviceType>('sender');
