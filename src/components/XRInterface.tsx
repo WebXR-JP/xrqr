@@ -17,6 +17,7 @@ interface QRData {
 export const XRInterface = () => {
   const [activeTab, setActiveTab] = useState<Tab>('camera');
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const {
     encryptionKey,
     history,
@@ -44,6 +45,9 @@ export const XRInterface = () => {
           };
           addHistoryItem(historyItem);
           setError(null);
+          setSuccessMessage('QRコードを読み取りました！クリップボードにコピーしました');
+          // 3秒後にメッセージを消す
+          setTimeout(() => setSuccessMessage(null), 3000);
           return;
         }
       } catch {
@@ -65,6 +69,9 @@ export const XRInterface = () => {
           };
           addHistoryItem(historyItem);
         }
+        setSuccessMessage('暗号化されたQRコードを読み取りました！クリップボードにコピーしました');
+        // 3秒後にメッセージを消す
+        setTimeout(() => setSuccessMessage(null), 3000);
       }
 
       setError(null);
@@ -173,6 +180,9 @@ export const XRInterface = () => {
 
       {(error || scanError) && (
         <div className={styles.error}>{error || scanError}</div>
+      )}
+      {successMessage && (
+        <div className={styles.success}>{successMessage}</div>
       )}
     </div>
   );

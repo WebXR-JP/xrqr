@@ -159,6 +159,20 @@
   margin: 1rem 0;
 }
 
+.success {
+  color: #059669;
+  text-align: center;
+  margin: 1rem 0;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .startButton {
   display: block;
   width: 100%;
