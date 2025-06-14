@@ -1,11 +1,10 @@
 .container {
   align-items: stretch;
   flex: 1;
-  max-width: 900px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 3rem 4rem;
+  padding: 2rem;
 }
 
 .title {
@@ -31,6 +30,12 @@
 .label {
   font-weight: bold;
   color: #2563eb;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
 }
 
 .textArea {
@@ -112,4 +117,19 @@
   color: #dc2626;
   text-align: center;
   margin-top: 1rem;
+}
+
+.qrDisplayWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.qrInstructions {
+  text-align: center;
+  color: #64748b;
+  line-height: 1.6;
 }

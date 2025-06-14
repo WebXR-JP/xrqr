@@ -26,13 +26,14 @@ export const App = () => {
       <BackgroundShader />
       <header className={styles.header}>
         <h1 className={styles.title}>
-          <span className="material-icons" style={{ marginRight: '0.5rem', fontSize: '1.8rem' }}>
-            qr_code
-          </span>
-          XRQR
+          <img src="/title.png" alt="XRQR" className={styles.titleImage} />
         </h1>
+        <p className={styles.subtitle}>PC・スマホからVRゴーグルへ瞬間転送 - QRコードでかんたんコピー</p>
       </header>
       <main className={styles.main}>{renderScreen()}</main>
+      <footer className={styles.footer}>
+        <p className={styles.copyright}>© 2024 WebXR-JP</p>
+      </footer>
     </div>
   )
 }
