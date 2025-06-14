@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { useQRScanner } from '~/hooks/useQRScanner'
 import { EncryptionService } from '~/services/EncryptionService'
@@ -144,81 +145,84 @@ export const ReceiverScreen = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.tabs}>
-        <Button
-          variant={activeTab === 'camera' ? 'primary' : 'secondary'}
-          size="medium"
-          onClick={() => setActiveTab('camera')}
-          className={styles.tab}
-        >
-          カメラ
-        </Button>
-        <Button
-          variant={activeTab === 'history' ? 'primary' : 'secondary'}
-          size="medium"
-          onClick={() => setActiveTab('history')}
-          className={styles.tab}
-        >
-          履歴
-        </Button>
-      </div>
-
-      {activeTab === 'camera' ? (
-        <div>
-          <div className={styles.cameraContainer}>
-            <video 
-              ref={videoRef} 
-              className={styles.video}
-              playsInline
-              autoPlay 
-            />
-            <canvas ref={canvasRef} className={styles.canvas} />
-            <div className={styles.scanOverlay} />
-          </div>
-          
-          {/* デバッグ情報表示 */}
-          {debugInfo.length > 0 && (
-            <div className={styles.debugContainer}>
-              <h4>📊 デバッグ情報</h4>
-              {debugInfo.map((info, index) => (
-                <div key={index} className={styles.debugItem}>
-                  {info}
-                </div>
-              ))}
-            </div>
-          )}
+    <>
+      <div className={styles.container}>
+        <div className={styles.tabs}>
+          <Button
+            variant={activeTab === 'camera' ? 'primary' : 'secondary'}
+            size="medium"
+            onClick={() => setActiveTab('camera')}
+            className={styles.tab}
+          >
+            カメラ
+          </Button>
+          <Button
+            variant={activeTab === 'history' ? 'primary' : 'secondary'}
+            size="medium"
+            onClick={() => setActiveTab('history')}
+            className={styles.tab}
+          >
+            履歴
+          </Button>
         </div>
-      ) : (
-        <div className={styles.historyContainer}>
-          {history.length > 0 && (
-            <Button variant="secondary" size="small" onClick={clearHistory} className={styles.clearAllButton}>
-              履歴を全て削除
-            </Button>
-          )}
-          {history.map((item) => (
-            <div key={item.id} className={styles.historyItem}>
-              <div className={styles.historyItemHeader}>
-                <span className={styles.historyItemTime}>
-                  {new Date(item.timestamp).toLocaleString()}
-                </span>
-                <Button variant="ghost" size="small" onClick={() => removeHistoryItem(item.id)} className={styles.deleteButton}>
-                  削除
-                </Button>
+
+        {activeTab === 'camera' ? (
+          <div>
+            <div className={styles.cameraContainer}>
+              <video 
+                ref={videoRef} 
+                className={styles.video}
+                playsInline
+                autoPlay 
+              />
+              <canvas ref={canvasRef} className={styles.canvas} />
+              <div className={styles.scanOverlay} />
+            </div>
+          </div>
+        ) : (
+          <div className={styles.historyContainer}>
+            {history.length > 0 && (
+              <Button variant="secondary" size="small" onClick={clearHistory} className={styles.clearAllButton}>
+                履歴を全て削除
+              </Button>
+            )}
+            {history.map((item) => (
+              <div key={item.id} className={styles.historyItem}>
+                <div className={styles.historyItemHeader}>
+                  <span className={styles.historyItemTime}>
+                    {new Date(item.timestamp).toLocaleString()}
+                  </span>
+                  <Button variant="ghost" size="small" onClick={() => removeHistoryItem(item.id)} className={styles.deleteButton}>
+                    削除
+                  </Button>
+                </div>
+                <div
+                  className={styles.historyItemPreview}
+                  onClick={() => copyToClipboard(item.content)}
+                >
+                  {item.preview}
+                </div>
               </div>
-              <div
-                className={styles.historyItemPreview}
-                onClick={() => copyToClipboard(item.content)}
-              >
-                {item.preview}
-              </div>
+            ))}
+          </div>
+        )}
+
+        {(error || scanError) && <div className={styles.error}>{error || scanError}</div>}
+        {successMessage && <div className={styles.success}>{successMessage}</div>}
+      </div>
+      
+      {/* デバッグ情報を Portal で body に直接配置 */}
+      {import.meta.env.DEV && debugInfo.length > 0 && createPortal(
+        <div className={styles.debugContainer}>
+          <h4>📊 デバッグ情報</h4>
+          {debugInfo.map((info, index) => (
+            <div key={index} className={styles.debugItem}>
+              {info}
             </div>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
-
-      {(error || scanError) && <div className={styles.error}>{error || scanError}</div>}
-      {successMessage && <div className={styles.success}>{successMessage}</div>}
-    </div>
+    </>
   )
 }
