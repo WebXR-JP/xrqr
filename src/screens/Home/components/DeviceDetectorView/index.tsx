@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useXRDetection } from '~/hooks/useXRDetection'
+import { Button } from '~/components/Button'
 import styles from './styles.module.css'
 
 type DeviceType = 'sender' | 'receiver' | null
@@ -34,19 +35,19 @@ export const DeviceDetectorView: React.FC<DeviceDetectorViewProps> = ({ onDevice
         <div className={styles.info}>このデバイスは送信側として利用可能です</div>
       )}
       <div className={styles.manualSelect}>
-        <button
-          type="button"
-          className={styles.button}
+        <Button
+          variant="primary"
+          size="large"
           onClick={() => {
             setManualSelect(true)
             onDeviceTypeSelect('sender')
           }}
         >
           送信側として使用
-        </button>
-        <button
-          type="button"
-          className={styles.button}
+        </Button>
+        <Button
+          variant="primary"
+          size="large"
           onClick={() => {
             setManualSelect(true)
             onDeviceTypeSelect('receiver')
@@ -54,7 +55,7 @@ export const DeviceDetectorView: React.FC<DeviceDetectorViewProps> = ({ onDevice
           disabled={!isXRDevice}
         >
           受信側として使用
-        </button>
+        </Button>
       </div>
     </div>
   )

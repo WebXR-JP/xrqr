@@ -23,12 +23,12 @@ export const App = () => {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>XRQR</h1>
-        {deviceType && (
-          <button type="button" className={styles.backButton} onClick={() => setDeviceType(null)}>
-            戻る
-          </button>
-        )}
+        <h1 className={styles.title}>
+          <span className="material-icons" style={{ marginRight: '0.5rem', fontSize: '1.8rem' }}>
+            qr_code
+          </span>
+          XRQR
+        </h1>
       </header>
       <main className={styles.main}>{renderScreen()}</main>
     </div>

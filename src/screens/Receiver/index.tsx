@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { useQRScanner } from '~/hooks/useQRScanner'
 import { EncryptionService } from '~/services/EncryptionService'
+import { Button } from '~/components/Button'
 import type { HistoryItem } from '~/types'
 import styles from './styles.module.css'
 
@@ -128,18 +129,22 @@ export const ReceiverScreen = () => {
   return (
     <div className={styles.container}>
       <div className={styles.tabs}>
-        <button
-          className={`${styles.tab} ${activeTab === 'camera' ? styles.active : ''}`}
+        <Button
+          variant={activeTab === 'camera' ? 'primary' : 'secondary'}
+          size="medium"
           onClick={() => setActiveTab('camera')}
+          className={styles.tab}
         >
           カメラ
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'history' ? styles.active : ''}`}
+        </Button>
+        <Button
+          variant={activeTab === 'history' ? 'primary' : 'secondary'}
+          size="medium"
           onClick={() => setActiveTab('history')}
+          className={styles.tab}
         >
           履歴
-        </button>
+        </Button>
       </div>
 
       {activeTab === 'camera' ? (
@@ -154,12 +159,14 @@ export const ReceiverScreen = () => {
             <canvas ref={canvasRef} className={styles.canvas} />
             <div className={styles.scanOverlay} />
           </div>
-          <button
-            className={styles.startButton}
+          <Button
+            variant="primary"
+            size="large"
             onClick={isScanning ? stopScanning : startScanning}
+            className={styles.startButton}
           >
             {isScanning ? 'スキャン停止' : 'スキャン開始'}
-          </button>
+          </Button>
           
           {/* デバッグ情報表示 */}
           {debugInfo.length > 0 && (
@@ -176,9 +183,9 @@ export const ReceiverScreen = () => {
       ) : (
         <div className={styles.historyContainer}>
           {history.length > 0 && (
-            <button className={styles.clearAllButton} onClick={clearHistory}>
+            <Button variant="secondary" size="small" onClick={clearHistory} className={styles.clearAllButton}>
               履歴を全て削除
-            </button>
+            </Button>
           )}
           {history.map((item) => (
             <div key={item.id} className={styles.historyItem}>
@@ -186,9 +193,9 @@ export const ReceiverScreen = () => {
                 <span className={styles.historyItemTime}>
                   {new Date(item.timestamp).toLocaleString()}
                 </span>
-                <button className={styles.deleteButton} onClick={() => removeHistoryItem(item.id)}>
+                <Button variant="ghost" size="small" onClick={() => removeHistoryItem(item.id)} className={styles.deleteButton}>
                   削除
-                </button>
+                </Button>
               </div>
               <div
                 className={styles.historyItemPreview}

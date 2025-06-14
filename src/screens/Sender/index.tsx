@@ -1,6 +1,7 @@
 import QRCode from 'qrcode'
 import { useCallback, useState } from 'react'
 import { EncryptionService } from '~/services/EncryptionService'
+import { Button } from '~/components/Button'
 import styles from './styles.module.css'
 
 export const SenderScreen = () => {
@@ -60,71 +61,79 @@ export const SenderScreen = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>テキスト送信</h1>
-      <div className={styles.form}>
-        <div className={styles.inputGroup}>
-          <label className={styles.label} htmlFor="content">
-            テキスト
-          </label>
-          <textarea
-            id="content"
-            className={styles.textArea}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="送信したいテキストを入力してください"
-          />
+      
+      <div className={styles.contentWrapper}>
+        <div className={styles.formSection}>
+          <div className={styles.form}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label} htmlFor="content">
+                テキスト
+              </label>
+              <textarea
+                id="content"
+                className={styles.textArea}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="送信したいテキストを入力してください"
+              />
+            </div>
+
+            <div className={styles.checkboxGroup}>
+              <input
+                id="isEncrypted"
+                type="checkbox"
+                className={styles.checkbox}
+                checked={isEncrypted}
+                onChange={(e) => {
+                  setIsEncrypted(e.target.checked)
+                  if (!e.target.checked) {
+                    setPin('')
+                  }
+                }}
+              />
+              <label className={styles.label} htmlFor="isEncrypted">
+                パスワード等の秘匿情報（暗号化）
+              </label>
+            </div>
+
+            {isEncrypted && (
+              <div className={styles.inputGroup}>
+                <label className={styles.label} htmlFor="pin">
+                  暗号化キー（4桁の数字）
+                </label>
+                <input
+                  id="pin"
+                  type="text"
+                  className={styles.pinInput}
+                  value={pin}
+                  onChange={handlePinChange}
+                  placeholder="0000"
+                  inputMode="numeric"
+                />
+              </div>
+            )}
+
+            <Button
+              variant="primary"
+              size="medium"
+              onClick={generateQRCode}
+              disabled={!content.trim() || (isEncrypted && !validatePin(pin))}
+            >
+              QRコード生成
+            </Button>
+          </div>
+
+          {error && <div className={styles.error}>{error}</div>}
         </div>
 
-        <div className={styles.checkboxGroup}>
-          <input
-            id="isEncrypted"
-            type="checkbox"
-            className={styles.checkbox}
-            checked={isEncrypted}
-            onChange={(e) => {
-              setIsEncrypted(e.target.checked)
-              if (!e.target.checked) {
-                setPin('')
-              }
-            }}
-          />
-          <label className={styles.label} htmlFor="isEncrypted">
-            パスワード等の秘匿情報（暗号化）
-          </label>
-        </div>
-
-        {isEncrypted && (
-          <div className={styles.inputGroup}>
-            <label className={styles.label} htmlFor="pin">
-              暗号化キー（4桁の数字）
-            </label>
-            <input
-              id="pin"
-              type="text"
-              className={styles.pinInput}
-              value={pin}
-              onChange={handlePinChange}
-              placeholder="0000"
-              inputMode="numeric"
-            />
+        {qrCodeUrl && (
+          <div className={styles.qrSection}>
+            <div className={styles.qrContainer}>
+              <img src={qrCodeUrl} alt="生成されたQRコード" />
+            </div>
           </div>
         )}
-
-        <button
-          className={styles.generateButton}
-          onClick={generateQRCode}
-          disabled={!content.trim() || (isEncrypted && !validatePin(pin))}
-        >
-          QRコード生成
-        </button>
       </div>
-
-      {error && <div className={styles.error}>{error}</div>}
-
-      {qrCodeUrl && (
-        <div className={styles.qrContainer}>
-          <img src={qrCodeUrl} alt="生成されたQRコード" />
-        </div>
-      )}
     </div>
   )
 }

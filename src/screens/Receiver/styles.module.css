@@ -10,21 +10,6 @@
   margin-bottom: 2rem;
 }
 
-.tab {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #e5e7eb;
-  color: #4b5563;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab.active {
-  background-color: #2563eb;
-  color: white;
-}
 
 .cameraContainer {
   position: relative;
@@ -109,11 +94,11 @@
 
 .historyItemTime {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #1e40af;
 }
 
 .historyItemPreview {
-  color: #1f2937;
+  color: #1d4ed8;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -121,36 +106,29 @@
   -webkit-box-orient: vertical;
 }
 
-.deleteButton {
-  padding: 0.25rem 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  background-color: #ef4444;
-  color: white;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.deleteButton:hover {
-  background-color: #dc2626;
-}
 
 .clearAllButton {
   align-self: flex-end;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #ef4444;
-  color: white;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
   margin-bottom: 1rem;
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: white !important;
 }
 
 .clearAllButton:hover {
-  background-color: #dc2626;
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+.deleteButton {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: white !important;
+}
+
+.deleteButton:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
 }
 
 .error {
@@ -186,23 +164,6 @@
   width: 100%;
   max-width: 300px;
   margin: 1rem auto;
-  padding: 0.75rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.startButton:hover {
-  background-color: #1d4ed8;
-}
-
-.startButton:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
 }
 
 .inputGroup {
@@ -213,7 +174,7 @@
 
 .label {
   font-weight: bold;
-  color: #333;
+  color: #2563eb;
 }
 
 .pinInput {
@@ -238,7 +199,7 @@
 
 .debugContainer h4 {
   margin: 0 0 0.75rem 0;
-  color: #495057;
+  color: #2563eb;
   font-size: 1rem;
 }
 

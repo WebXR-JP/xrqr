@@ -1,5 +1,5 @@
 .container {
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -25,7 +25,7 @@
 
 .label {
   font-weight: bold;
-  color: #333;
+  color: #2563eb;
 }
 
 .textArea {
@@ -56,32 +56,51 @@
   height: 1.2rem;
 }
 
-.generateButton {
-  padding: 0.75rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.generateButton:hover {
-  background-color: #1d4ed8;
-}
-
-.generateButton:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
 
 .qrContainer {
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+}
+
+.qrContainer img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.formSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.qrSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .container {
+    max-width: 600px;
+  }
 }
 
 .error {

@@ -11,7 +11,7 @@
 .loading {
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  color: #666;
+  color: #2563eb;
 }
 
 .error {
@@ -33,22 +33,3 @@
   margin-top: 1rem;
 }
 
-.button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #2563eb;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.button:hover {
-  background-color: #1d4ed8;
-}
-
-.button:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
