@@ -6,38 +6,112 @@ export const useQRScanner = (onScan: (data: string) => void) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [debugInfo, setDebugInfo] = useState<string[]>([])
+  const hasLoggedScanStart = useRef(false)
+  const frameCount = useRef(0)
+
+  const addDebugInfo = (message: string) => {
+    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${message}`])
+  }
 
   const startScanning = async () => {
     try {
-      // カメラの設定を最適化
-      // より小さな解像度で開始し、必要に応じて調整
-      const constraints = {
-        video: {
-          facingMode: 'environment',
-          width: { min: 640, ideal: 1280, max: 1920 },
-          height: { min: 480, ideal: 720, max: 1080 },
-          aspectRatio: 1.777777778,
-        },
+      addDebugInfo('🔍 QRスキャン開始')
+      const hasMediaDevices = !!navigator.mediaDevices
+      const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+      addDebugInfo(`📱 ブラウザ対応: MediaDevices=${hasMediaDevices}, getUserMedia=${hasGetUserMedia}`)
+
+      // メディアデバイスAPIのポリフィル（HMD対応）
+      if (navigator.mediaDevices === undefined) {
+        addDebugInfo('⚠️ mediaDevices未定義 - ポリフィル適用')
+        ;(navigator as any).mediaDevices = {}
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play()
-          setIsScanning(true)
-          scanFrame()
+      if (!navigator.mediaDevices.getUserMedia) {
+        addDebugInfo('⚠️ getUserMedia未定義 - レガシーAPI使用')
+        ;(navigator as any).mediaDevices.getUserMedia = function(constraints: MediaStreamConstraints) {
+          const getUserMedia = (navigator as any).webkitGetUserMedia || (navigator as any).mozGetUserMedia
+          if (!getUserMedia) {
+            return Promise.reject(new Error('getUserMedia is not implemented in this browser'))
+          }
+          return new Promise(function(resolve, reject) {
+            getUserMedia.call(navigator, constraints, resolve, reject)
+          })
         }
       }
+
+      // まず基本的なアクセス権を取得（参考コードのアプローチ）
+      addDebugInfo('🎥 基本アクセス権取得...')
+      const tempStream = await navigator.mediaDevices.getUserMedia({ video: true })
+      addDebugInfo('✅ 基本アクセス権取得成功')
+      // 権限取得用ストリームを停止
+      tempStream.getTracks().forEach(track => track.stop())
+
+      // 利用可能なデバイスを確認
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const videoDevices = devices.filter(device => device.kind === 'videoinput')
+      addDebugInfo(`📹 カメラデバイス: ${videoDevices.length}個検出`)
+
+      // Quest/HMD環境の検出
+      const isQuestBrowser = navigator.userAgent.toLowerCase().includes('quest') || 
+                             navigator.userAgent.toLowerCase().includes('oculus') || 
+                             navigator.userAgent.toLowerCase().includes('meta')
+
+      let stream: MediaStream
+
+      if (isQuestBrowser && videoDevices.length > 0) {
+        addDebugInfo('🥽 Quest環境 - デバイス個別指定でアクセス')
+        
+        // 後方カメラ（パススルーカメラ）を探す
+        const backCamera = videoDevices.find(device => 
+          device.label.toLowerCase().includes('back') || 
+          device.label.toLowerCase().includes('rear') ||
+          device.label.toLowerCase().includes('environment')
+        ) || videoDevices[videoDevices.length - 1] // 最後のデバイスを試行
+
+        addDebugInfo(`🎯 選択デバイス: ${backCamera.label || 'Unknown'}`)
+        
+        // 参考コードと同じアプローチ：deviceIdで明示的に指定
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: { exact: backCamera.deviceId } }
+        })
+      } else {
+        addDebugInfo('💻 通常環境 - facingMode指定')
+        // 通常環境では facingMode で背面カメラを指定
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        })
+      }
+      
+      addDebugInfo('✅ カメラストリーム取得成功')
+
+      if (videoRef.current) {
+        const video = videoRef.current
+        
+        // 参考コードと同じ順序：属性設定→ストリーム設定
+        addDebugInfo('📺 video属性設定中...')
+        video.autoplay = true
+        video.playsInline = true
+        
+        addDebugInfo('📺 ストリーム設定中...')
+        video.srcObject = stream
+        
+        // 参考コードのアプローチ：autoplayに任せて、シンプルにスキャン開始
+        addDebugInfo('🚀 スキャン処理を開始します')
+        setIsScanning(true)
+        
+        // scanFrame()はuseEffectで自動実行されるので、ここでは呼ばない
+      }
     } catch (error) {
+      addDebugInfo(`❌ カメラアクセス失敗: ${error}`)
       setError('カメラにアクセスできません')
-      console.error('Camera access failed:', error)
     }
   }
 
   const stopScanning = () => {
     setIsScanning(false)
+    hasLoggedScanStart.current = false
+    frameCount.current = 0
     if (videoRef.current?.srcObject) {
       const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
       tracks.forEach((track) => track.stop())
@@ -45,13 +119,31 @@ export const useQRScanner = (onScan: (data: string) => void) => {
   }
 
   const scanFrame = () => {
-    if (!videoRef.current || !canvasRef.current || !isScanning) return
+    if (!videoRef.current || !canvasRef.current || !isScanning) {
+      addDebugInfo(`⚠️ スキャンフレーム条件未満足: video=${!!videoRef.current}, canvas=${!!canvasRef.current}, scanning=${isScanning}`)
+      return
+    }
 
     const video = videoRef.current
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
 
+    // 初回のデバッグ情報を表示
+    if (!hasLoggedScanStart.current) {
+      addDebugInfo(`🔍 スキャンフレーム開始: readyState=${video.readyState}, HAVE_ENOUGH_DATA=${video.HAVE_ENOUGH_DATA}`)
+      addDebugInfo(`📐 Video解像度: ${video.videoWidth}x${video.videoHeight}`)
+      addDebugInfo(`📺 Video状態: paused=${video.paused}, ended=${video.ended}`)
+      hasLoggedScanStart.current = true
+    }
+
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      frameCount.current++
+      
+      // 30フレームごとにフレーム処理状況を報告
+      if (frameCount.current % 30 === 1) {
+        addDebugInfo(`🔄 フレーム処理中... (${frameCount.current}フレーム目)`)
+      }
+
       // ビデオのアスペクト比を維持しながら、適切なサイズでキャンバスに描画
       const videoAspect = video.videoWidth / video.videoHeight
       const canvasWidth = 640
@@ -84,6 +176,12 @@ export const useQRScanner = (onScan: (data: string) => void) => {
 
         // QRコード検出を複数の向きで試行
         const angles = [0, 90, 180, 270]
+        
+        // 60フレームごとにQR検出処理状況を報告
+        if (frameCount.current % 60 === 1) {
+          addDebugInfo(`🔍 QRコード検出処理実行中...`)
+        }
+        
         for (const angle of angles) {
           if (angle > 0) {
             // キャンバスを回転
@@ -111,7 +209,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
             )
             const code = jsQR(rotatedImageData.data, tempCanvas.width, tempCanvas.height)
             if (code) {
-              console.log('QRコード検出成功 (回転角度:', angle, '度)')
+              addDebugInfo(`✅ QRコード検出成功 (回転角度: ${angle}度)`)
               onScan(code.data)
               stopScanning()
               return
@@ -119,7 +217,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
           } else {
             const code = jsQR(data, canvasWidth, canvasHeight)
             if (code) {
-              console.log('QRコード検出成功')
+              addDebugInfo('✅ QRコード検出成功')
               onScan(code.data)
               stopScanning()
               return
@@ -134,6 +232,14 @@ export const useQRScanner = (onScan: (data: string) => void) => {
     }
   }
 
+  // isScanning状態が変更されたときにscanFrame()を実行
+  useEffect(() => {
+    if (isScanning) {
+      addDebugInfo('✅ isScanning=true検出 - scanFrame開始')
+      scanFrame()
+    }
+  }, [isScanning])
+
   useEffect(() => {
     return () => {
       stopScanning()
@@ -147,5 +253,6 @@ export const useQRScanner = (onScan: (data: string) => void) => {
     stopScanning,
     isScanning,
     error,
+    debugInfo,
   }
 }

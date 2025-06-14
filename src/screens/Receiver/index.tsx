@@ -91,6 +91,7 @@ export const ReceiverScreen = () => {
     stopScanning,
     isScanning,
     error: scanError,
+    debugInfo,
   } = useQRScanner(handleScan)
 
   const copyToClipboard = async (content: string) => {
@@ -144,7 +145,12 @@ export const ReceiverScreen = () => {
       {activeTab === 'camera' ? (
         <div>
           <div className={styles.cameraContainer}>
-            <video ref={videoRef} className={styles.video} />
+            <video 
+              ref={videoRef} 
+              className={styles.video}
+              playsInline
+              autoPlay 
+            />
             <canvas ref={canvasRef} className={styles.canvas} />
             <div className={styles.scanOverlay} />
           </div>
@@ -154,6 +160,18 @@ export const ReceiverScreen = () => {
           >
             {isScanning ? 'スキャン停止' : 'スキャン開始'}
           </button>
+          
+          {/* デバッグ情報表示 */}
+          {debugInfo.length > 0 && (
+            <div className={styles.debugContainer}>
+              <h4>📊 デバッグ情報</h4>
+              {debugInfo.map((info, index) => (
+                <div key={index} className={styles.debugItem}>
+                  {info}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div className={styles.historyContainer}>
