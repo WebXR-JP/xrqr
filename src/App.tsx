@@ -3,6 +3,7 @@ import styles from './App.module.css'
 import { HomeScreen } from './screens/Home'
 import { ReceiverScreen } from './screens/Receiver'
 import { SenderScreen } from './screens/Sender'
+import BackgroundShader from '~/components/BackgroundShader'
 
 type DeviceType = 'sender' | 'receiver' | null
 
@@ -22,6 +23,7 @@ export const App = () => {
 
   return (
     <div className={styles.container}>
+      <BackgroundShader />
       <header className={styles.header}>
         <h1 className={styles.title}>
           <span className="material-icons" style={{ marginRight: '0.5rem', fontSize: '1.8rem' }}>
