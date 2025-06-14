@@ -1,5 +1,5 @@
 import jsQR from 'jsqr'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 export const useQRScanner = (onScan: (data: string) => void) => {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -14,7 +14,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
     setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${message}`])
   }
 
-  const startScanning = async () => {
+  const startScanning = useCallback(async () => {
     try {
       addDebugInfo('🔍 QRスキャン開始')
       const hasMediaDevices = !!navigator.mediaDevices
@@ -106,7 +106,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
       addDebugInfo(`❌ カメラアクセス失敗: ${error}`)
       setError('カメラにアクセスできません')
     }
-  }
+  }, [])
 
   const stopScanning = () => {
     setIsScanning(false)
@@ -208,7 +208,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
               tempCanvas.height,
             )
             const code = jsQR(rotatedImageData.data, tempCanvas.width, tempCanvas.height)
-            if (code) {
+            if (code && code.data && code.data.trim().length >= 10) {
               addDebugInfo(`✅ QRコード検出成功 (回転角度: ${angle}度)`)
               onScan(code.data)
               stopScanning()
@@ -216,7 +216,7 @@ export const useQRScanner = (onScan: (data: string) => void) => {
             }
           } else {
             const code = jsQR(data, canvasWidth, canvasHeight)
-            if (code) {
+            if (code && code.data && code.data.trim().length >= 10) {
               addDebugInfo('✅ QRコード検出成功')
               onScan(code.data)
               stopScanning()
