@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import { useQRScanner } from '../../hooks/useQRScanner'
-import { EncryptionService } from '../../services/EncryptionService'
-import type { HistoryItem } from '../../types'
+import { useLocalStorage } from '~/hooks/useLocalStorage'
+import { useQRScanner } from '~/hooks/useQRScanner'
+import { EncryptionService } from '~/services/EncryptionService'
+import type { HistoryItem } from '~/types'
 import styles from './styles.module.css'
 
 type Tab = 'camera' | 'history'

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useXRDetection } from '../../../../hooks/useXRDetection'
+import { useXRDetection } from '~/hooks/useXRDetection'
 import styles from './styles.module.css'
 
 type DeviceType = 'sender' | 'receiver' | null

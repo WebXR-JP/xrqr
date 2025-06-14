@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
   // ベースパスを相対パスに設定
@@ -10,6 +11,11 @@ export default defineConfig({
     allowedHosts: true,
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      '~': resolve(__dirname, 'src'),
+    },
+  },
   css: {
     modules: {
       localsConvention: 'dashes',

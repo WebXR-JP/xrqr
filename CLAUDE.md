@@ -46,6 +46,21 @@ npm run preview                                   # ビルド結果のプレビ�
 
 - インポート文だけを追加して保存すると、lintによって不要なインポートとして削除されることがあります。インポートを追加する場合は、そのインポートを使用するコードも同時に追加してください。
 
+### パスエイリアス
+
+- src/ディレクトリには `~` エイリアスが設定されています
+- 相対パス（../）は使用せず、必ず `~` エイリアスを使用してください
+- 例:
+  ```typescript
+  // ❌ 相対パス（使用禁止）
+  import { Component } from '../../components/Component'
+  import { useHook } from '../../../hooks/useHook'
+  
+  // ✅ エイリアス（推奨）
+  import { Component } from '~/components/Component'
+  import { useHook } from '~/hooks/useHook'
+  ```
+
 ## コンポーネント階層ルール
 
 ### 基本方針：Colocation重視

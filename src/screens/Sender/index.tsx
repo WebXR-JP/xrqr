@@ -1,6 +1,6 @@
 import QRCode from 'qrcode'
 import { useCallback, useState } from 'react'
-import { EncryptionService } from '../../services/EncryptionService'
+import { EncryptionService } from '~/services/EncryptionService'
 import styles from './styles.module.css'
 
 export const SenderScreen = () => {
