@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 import { useQRScanner } from '~/hooks/useQRScanner'
 import { EncryptionService } from '~/services/EncryptionService'
@@ -31,6 +31,11 @@ export const ReceiverScreen = () => {
   const handleScan = useCallback(
     async (data: string) => {
       try {
+        // データが空または短すぎる場合は無視
+        if (!data || data.trim().length < 10) {
+          return
+        }
+
         let qrData: QRData
 
         try {
@@ -59,27 +64,33 @@ export const ReceiverScreen = () => {
             return
           }
 
-          const decrypted = EncryptionService.decrypt(data, encryptionKey)
-          await navigator.clipboard.writeText(decrypted.content)
+          try {
+            const decrypted = EncryptionService.decrypt(data, encryptionKey)
+            await navigator.clipboard.writeText(decrypted.content)
 
-          if (!decrypted.isSecret) {
-            const historyItem: HistoryItem = {
-              id: crypto.randomUUID(),
-              content: decrypted.content,
-              preview: decrypted.content.slice(0, 50),
-              timestamp: decrypted.timestamp,
+            if (!decrypted.isSecret) {
+              const historyItem: HistoryItem = {
+                id: crypto.randomUUID(),
+                content: decrypted.content,
+                preview: decrypted.content.slice(0, 50),
+                timestamp: decrypted.timestamp,
+              }
+              addHistoryItem(historyItem)
             }
-            addHistoryItem(historyItem)
+            setSuccessMessage('暗号化されたQRコードを読み取りました！クリップボードにコピーしました')
+            // 3秒後にメッセージを消す
+            setTimeout(() => setSuccessMessage(null), 3000)
+            setError(null)
+          } catch (decryptError) {
+            // 暗号化解除に失敗した場合は、無効なQRコードとして無視
+            console.warn('Invalid QR code data detected and ignored:', data.slice(0, 50))
+            return
           }
-          setSuccessMessage('暗号化されたQRコードを読み取りました！クリップボードにコピーしました')
-          // 3秒後にメッセージを消す
-          setTimeout(() => setSuccessMessage(null), 3000)
         }
-
-        setError(null)
       } catch (err) {
+        console.error('QR code scanning unexpected error:', err)
+        // 予期しないエラーの場合のみエラー表示
         setError('QRコードの読み取りに失敗しました')
-        console.error('QR code scanning failed:', err)
       }
     },
     [encryptionKey, addHistoryItem],
@@ -89,11 +100,17 @@ export const ReceiverScreen = () => {
     videoRef,
     canvasRef,
     startScanning,
-    stopScanning,
     isScanning,
     error: scanError,
     debugInfo,
   } = useQRScanner(handleScan)
+
+  // カメラタブがアクティブかつ暗号化キーが設定されている場合、自動でスキャンを開始
+  useEffect(() => {
+    if (activeTab === 'camera' && encryptionKey && !isScanning) {
+      startScanning()
+    }
+  }, [activeTab, encryptionKey, isScanning])
 
   const copyToClipboard = async (content: string) => {
     try {
@@ -159,14 +176,6 @@ export const ReceiverScreen = () => {
             <canvas ref={canvasRef} className={styles.canvas} />
             <div className={styles.scanOverlay} />
           </div>
-          <Button
-            variant="primary"
-            size="large"
-            onClick={isScanning ? stopScanning : startScanning}
-            className={styles.startButton}
-          >
-            {isScanning ? 'スキャン停止' : 'スキャン開始'}
-          </Button>
           
           {/* デバッグ情報表示 */}
           {debugInfo.length > 0 && (
