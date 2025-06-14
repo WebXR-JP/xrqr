@@ -53,6 +53,11 @@ export const SenderScreen = () => {
     }
   }, [content, pin, isEncrypted])
 
+  const resetQRCode = () => {
+    setQrCodeUrl(null)
+    setError(null)
+  }
+
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^\d]/g, '').slice(0, 4)
     setPin(value)
@@ -60,80 +65,98 @@ export const SenderScreen = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>テキスト送信</h1>
-      
-      <div className={styles.contentWrapper}>
-        <div className={styles.formSection}>
-          <div className={styles.form}>
-            <div className={styles.inputGroup}>
-              <label className={styles.label} htmlFor="content">
-                テキスト
-              </label>
-              <textarea
-                id="content"
-                className={styles.textArea}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="送信したいテキストを入力してください"
-              />
-            </div>
+      <h1 className={styles.title}>QRコード生成</h1>
 
-            <div className={styles.checkboxGroup}>
-              <input
-                id="isEncrypted"
-                type="checkbox"
-                className={styles.checkbox}
-                checked={isEncrypted}
-                onChange={(e) => {
-                  setIsEncrypted(e.target.checked)
-                  if (!e.target.checked) {
-                    setPin('')
-                  }
-                }}
-              />
-              <label className={styles.label} htmlFor="isEncrypted">
-                パスワード等の秘匿情報（暗号化）
-              </label>
-            </div>
-
-            {isEncrypted && (
+      {!qrCodeUrl ? (
+        <div className={styles.contentWrapper}>
+          <div className={styles.formSection}>
+            <div className={styles.form}>
               <div className={styles.inputGroup}>
-                <label className={styles.label} htmlFor="pin">
-                  暗号化キー（4桁の数字）
+                <label className={styles.label} htmlFor="content">
+                  テキスト
                 </label>
-                <input
-                  id="pin"
-                  type="text"
-                  className={styles.pinInput}
-                  value={pin}
-                  onChange={handlePinChange}
-                  placeholder="0000"
-                  inputMode="numeric"
+                <div className={styles.description}>
+                  VRヘッドセットのクリップボードに送信したいテキストを入力してください
+                </div>
+                <textarea
+                  id="content"
+                  className={styles.textArea}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="送信したいテキストを入力してください"
                 />
               </div>
-            )}
 
-            <Button
-              variant="primary"
-              size="medium"
-              onClick={generateQRCode}
-              disabled={!content.trim() || (isEncrypted && !validatePin(pin))}
-            >
-              QRコード生成
-            </Button>
-          </div>
+              <div className={styles.checkboxGroup}>
+                <input
+                  id="isEncrypted"
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={isEncrypted}
+                  onChange={(e) => {
+                    setIsEncrypted(e.target.checked)
+                    if (!e.target.checked) {
+                      setPin('')
+                    }
+                  }}
+                />
+                <div>
+                  <label className={styles.label} htmlFor="isEncrypted">
+                    パスワード等の秘匿情報（暗号化）
+                  </label>
+                  <div className={styles.description}>
+                    テキストを暗号化してQRコードに保存し、履歴に残さない設定にします
+                  </div>
+                </div>
+              </div>
 
-          {error && <div className={styles.error}>{error}</div>}
-        </div>
+              {isEncrypted && (
+                <div className={styles.inputGroup}>
+                  <label className={styles.label} htmlFor="pin">
+                    暗号化キー（4桁の数字）
+                  </label>
+                  <input
+                    id="pin"
+                    type="text"
+                    className={styles.pinInput}
+                    value={pin}
+                    onChange={handlePinChange}
+                    placeholder="0000"
+                    inputMode="numeric"
+                  />
+                </div>
+              )}
 
-        {qrCodeUrl && (
-          <div className={styles.qrSection}>
-            <div className={styles.qrContainer}>
-              <img src={qrCodeUrl} alt="生成されたQRコード" />
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={generateQRCode}
+                disabled={!content.trim() || (isEncrypted && !validatePin(pin))}
+              >
+                QRコード生成
+              </Button>
             </div>
+
+            {error && <div className={styles.error}>{error}</div>}
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className={styles.qrDisplayWrapper}>
+          <div className={styles.qrContainer}>
+            <img src={qrCodeUrl} alt="生成されたQRコード" />
+          </div>
+          <div className={styles.qrInstructions}>
+            <p>VRゴーグルで xrqr.net を開いてこのQRコードをスキャンすると、クリップボードにコピーされます</p>
+          </div>
+          <Button
+            variant="secondary"
+            size="medium"
+            onClick={resetQRCode}
+          >
+            QRを作り直す
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
