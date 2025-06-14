@@ -14,9 +14,10 @@ npm install                                    # 依存関係インストール
 
 # 開発
 npm run dev                                        # 開発サーバー起動（https://lo.topot.al）
-npm run test                                       # Jest単体テスト実行
-npm run lint                                       # ESLint実行
 npm run build                                     # プロダクションビルド
+npm run preview                                   # ビルド結果のプレビュー
+
+# 注意: npm run test と npm run lint は現在利用不可
 ```
 
 ## コーディングプラクティス
@@ -26,9 +27,9 @@ npm run build                                     # プロダクションビル�
 - 元のコードをリファクタリングする場合は確認をとってください。
 - 元々書かれていたコメントなどはなるべく残してください。
 - コードを編集する前に必ずそのテストをまず書いてください。
-- npm run dev と npm run test, npm run lint のコマンドは許可します。コードを修正した場合は、npm run test でテストを実行してください。
-- テストが通らない場合は、コードを修正してください。
-- テストが二度失敗した場合は、ユーザーに確認してください。
+- npm run dev と npm run build のコマンドは許可します。コードを修正した場合は、npm run build でビルドを実行してください。
+- ビルドが通らない場合は、コードを修正してください。
+- ビルドが二度失敗した場合は、ユーザーに確認してください。
 
 ## 使用技術
 - Vite
