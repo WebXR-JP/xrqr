@@ -31,7 +31,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  aspect-ratio: 4/3;
+  aspect-ratio: 4 / 3;
   background-color: #000;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -61,7 +61,7 @@
 
 .scanOverlay::before,
 .scanOverlay::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 40px;
   height: 40px;
@@ -167,10 +167,18 @@
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .startButton {

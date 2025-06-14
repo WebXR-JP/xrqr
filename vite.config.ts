@@ -1,5 +1,5 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   // ベースパスを相対パスに設定
@@ -13,6 +13,6 @@ export default defineConfig({
   css: {
     modules: {
       localsConvention: 'dashes',
-    }
-  }
+    },
+  },
 })

@@ -8,6 +8,10 @@
   color: white;
   padding: 1rem;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .title {
@@ -18,4 +22,20 @@
 
 .main {
   padding: 1rem;
+}
+
+.backButton {
+  position: absolute;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

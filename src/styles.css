@@ -1,1 +1,6 @@
-html,body,#root {height:100%;margin:unset;}
+html,
+body,
+#root {
+  height: 100%;
+  margin: unset;
+}
