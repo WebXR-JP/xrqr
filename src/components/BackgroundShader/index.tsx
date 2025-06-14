@@ -31,7 +31,7 @@ const BackgroundMaterial = () => {
           float combinedWaves = (wave1 + wave2 + wave3) / 3.0;
 
           // グラデーションベース（より濃い色合い）
-          vec3 color1 = vec3(0.85, 0.88, 0.92); // より濃い薄青
+          vec3 color1 = vec3(0.85, 1.00, 0.92); // より濃い薄青
           vec3 color2 = vec3(0.75, 0.80, 0.85); // より濃い中間色
           vec3 color3 = vec3(0.65, 0.70, 0.78); // より濃い暗色
 
@@ -68,7 +68,7 @@ const BackgroundMaterial = () => {
 
   return (
     <mesh ref={meshRef} position={[0, 0, -1]}>
-      <planeGeometry args={[10, 10]} />
+      <planeGeometry args={[100, 100]} />
       <shaderMaterial
         vertexShader={shaderMaterial.vertexShader}
         fragmentShader={shaderMaterial.fragmentShader}

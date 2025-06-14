@@ -61,7 +61,7 @@ export const SenderScreen = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>テキスト送信</h1>
-      
+
       <div className={styles.contentWrapper}>
         <div className={styles.formSection}>
           <div className={styles.form}>

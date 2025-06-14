@@ -1,20 +1,22 @@
 .container {
+  min-width: 100vw;
   min-height: 100vh;
   position: relative;
   font-family: 'Noto Sans JP', sans-serif;
-  padding: 2rem;
   color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header {
   color: #1e293b;
-  padding: 1.5rem 2rem;
+  padding: 3rem 2rem;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-bottom: 2rem;
 }
 
 .title {
@@ -36,6 +38,11 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 900px;
+  width: 100%;
 }
 
 .backButton {

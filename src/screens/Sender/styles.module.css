@@ -1,17 +1,22 @@
 .container {
+  align-items: stretch;
+  flex: 1;
   max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 3rem 4rem;
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 2rem;
   text-align: center;
+  margin: 0;
 }
 
 .form {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -73,7 +78,7 @@
 
 .contentWrapper {
   display: flex;
-  gap: 2rem;
+  gap: 3rem;
   align-items: flex-start;
 }
 
@@ -97,7 +102,7 @@
     flex-direction: column;
     gap: 2rem;
   }
-  
+
   .container {
     max-width: 600px;
   }
