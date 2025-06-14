@@ -31,7 +31,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  aspect-ratio: 4/3;
+  aspect-ratio: 4 / 3;
   background-color: #000;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -61,7 +61,7 @@
 
 .scanOverlay::before,
 .scanOverlay::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 40px;
   height: 40px;
@@ -159,6 +159,28 @@
   margin: 1rem 0;
 }
 
+.success {
+  color: #059669;
+  text-align: center;
+  margin: 1rem 0;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .startButton {
   display: block;
   width: 100%;
@@ -181,4 +203,23 @@
 .startButton:disabled {
   background-color: #93c5fd;
   cursor: not-allowed;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: bold;
+  color: #333;
+}
+
+.pinInput {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  width: 120px;
 }

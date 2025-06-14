@@ -14,7 +14,7 @@
   "javascript": {
     "formatter": {
       "semicolons": "asNeeded",
-			"quoteStyle": "single"
+      "quoteStyle": "single"
     }
   },
   "linter": {
@@ -24,7 +24,7 @@
       "correctness": {
         "noUndeclaredVariables": "error",
         "noUnusedVariables": "error",
-				"noUnusedImports": "error",
+        "noUnusedImports": "error",
         "useHookAtTopLevel": "error"
       },
       "a11y": {
