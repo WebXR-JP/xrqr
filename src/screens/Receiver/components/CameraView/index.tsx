@@ -5,6 +5,7 @@ import { useToastDispatcher } from "~/providers/ToastDispatcher"
 import { HistoryItem } from "~/types"
 import { copyToClipboard } from "~/utils"
 import styles from "./styles.module.css"
+import { div } from "three/tsl"
 
 interface QRData {
   content: string
@@ -60,15 +61,23 @@ export const CameraView = () => {
   useEffect(() => { startScanning() }, [isScanning])
 
   return (
-    <div className={styles.cameraContainer}>
-      <video
-        ref={videoRef}
-        className={styles.video}
-        playsInline
-        autoPlay
-      />
-      <canvas ref={canvasRef} className={styles.canvas} />
-      <div className={styles.scanOverlay} />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>QRコードリーダー</h1>
+        <p className={styles.description}>
+          スマホやPCのQRコードを読み取って、クリップボードにコピーします。
+        </p>
+      </div>
+      <div className={styles.cameraContainer}>
+        <video
+          ref={videoRef}
+          className={styles.video}
+          playsInline
+          autoPlay
+        />
+        <canvas ref={canvasRef} className={styles.canvas} />
+        <div className={styles.scanOverlay} />
+      </div>
     </div>
   )
 }

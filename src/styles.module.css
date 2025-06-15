@@ -5,6 +5,16 @@ body,
   margin: unset;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
 .container {
   min-width: 100vw;
   min-height: 100vh;
@@ -63,7 +73,7 @@ body,
   align-items: stretch;
   max-width: 600px;
   width: 100%;
-  padding: 2.5rem;
+  padding: 1.5rem 2.5rem 2.5rem;
 }
 
 .footer {
