@@ -2,7 +2,7 @@ import styles from './App.module.css'
 import { ReceiverScreen } from './screens/Receiver'
 import { SenderScreen } from './screens/Sender'
 import BackgroundShader from '~/components/BackgroundShader'
-import { checkHMDBrowser } from './utils'
+import { checkHMDBrowser } from '~/utils'
 
 export const App = () => {
   const isHMDBrowser = checkHMDBrowser()

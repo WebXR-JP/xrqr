@@ -1,6 +1,6 @@
 import jsQR from 'jsqr'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { checkQuestBrowser } from '~/utils'
+import { checkHMDBrowser } from '~/utils'
 
 export const useQRScanner = (onScan: (data: string) => void, options?: { keepScanning?: boolean }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -54,11 +54,11 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
       addDebugInfo(`📹 カメラデバイス: ${videoDevices.length}個検出`)
 
       // Quest/HMD環境の検出
-      const isQuestBrowser = checkQuestBrowser()
+      const isHMDBrowser = checkHMDBrowser()
 
       let stream: MediaStream
 
-      if (isQuestBrowser && videoDevices.length > 0) {
+      if (isHMDBrowser && videoDevices.length > 0) {
         addDebugInfo('🥽 Quest環境 - デバイス個別指定でアクセス')
 
         // 後方カメラ（パススルーカメラ）を探す
