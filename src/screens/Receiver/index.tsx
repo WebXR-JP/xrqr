@@ -11,7 +11,7 @@ export const ReceiverScreen = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.tabs}>
+      {/* <div className={styles.tabs}>
         <Button
           variant={activeTab === 'camera' ? 'primary' : 'secondary'}
           size="medium"
@@ -28,7 +28,7 @@ export const ReceiverScreen = () => {
         >
           履歴
         </Button>
-      </div>
+      </div> */}
 
       {activeTab === 'camera' ? (
         <CameraView />
