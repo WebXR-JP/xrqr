@@ -47,10 +47,6 @@
   object-fit: cover;
 }
 
-.canvas {
-  display: none;
-}
-
 .scanOverlay {
   position: absolute;
   top: 50%;

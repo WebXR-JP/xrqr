@@ -1,8 +1,7 @@
-import { useCallback, useEffect } from "react"
-import { useLocalStorage } from "~/hooks/useLocalStorage"
+import { useEffect, useState } from "react"
+import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
 import { useToastDispatcher } from "~/providers/ToastDispatcher"
-import { HistoryItem } from "~/types"
 import { copyToClipboard } from "~/utils"
 import styles from "./styles.module.css"
 
@@ -14,50 +13,50 @@ interface QRData {
 }
 
 export const CameraView = () => {
-  const { addHistoryItem } = useLocalStorage()
+  const [scanable, setScannable] = useState(true)
   const { dispatch } = useToastDispatcher()
+  const { videoRef, codeData } = useQRScanner()
 
-  const handleScan = useCallback(
-    async (data: string) => {
+  useAsync(async () => {
+    if (!scanable) return
+    try {
+      if (!codeData) return
+
+      let content = ''
       try {
-        // データが空または短すぎる場合は無視
-        if (!data || data.trim().length < 10) return
-
-        const qrData = JSON.parse(data) as QRData
-        await copyToClipboard(qrData.content)
-
-        const historyItem: HistoryItem = {
-          id: crypto.randomUUID(),
-          content: qrData.content,
-          preview: qrData.content.slice(0, 50),
-          timestamp: qrData.timestamp,
-        }
-        addHistoryItem(historyItem)
-
-        dispatch({
-          message: 'QRコードを読み取りました！クリップボードにコピーしました',
-          type: 'success',
-        })
-        return
-      } catch (err) {
-        dispatch({
-          message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
-          type: 'error',
-        })
-        return
+        // QRコードのデータがJSON形式であることを確認
+        content = (JSON.parse(codeData) as QRData).content
+      } catch (e) {
+        // JSON形式でない場合はそのまま使用
+        content = codeData
       }
-    },
-    [addHistoryItem],
-  )
 
-  const {
-    videoRef,
-    canvasRef,
-    startScanning,
-    isScanning,
-  } = useQRScanner(handleScan, { keepScanning: true })
+      await copyToClipboard(content)
+      setScannable(false)
 
-  useEffect(() => { startScanning() }, [isScanning])
+      dispatch({
+        message: 'QRコードを読み取りました！クリップボードにコピーしました',
+        type: 'success',
+      })
+      return
+    } catch (err) {
+      dispatch({
+        message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
+        type: 'error',
+      })
+      return
+    }
+  }, [scanable, codeData, dispatch])
+
+  useEffect(() => {
+    // scanableがfalseになったら5秒後に再度スキャン可能にする
+    if (!scanable) {
+      const timer = setTimeout(() => {
+        setScannable(true)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [scanable])
 
   return (
     <div className={styles.container}>
@@ -74,7 +73,6 @@ export const CameraView = () => {
           playsInline
           autoPlay
         />
-        <canvas ref={canvasRef} className={styles.canvas} />
         <div className={styles.scanOverlay} />
       </div>
     </div>
