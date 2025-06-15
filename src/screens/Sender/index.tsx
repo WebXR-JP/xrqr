@@ -1,19 +1,13 @@
 import QRCode from 'qrcode'
 import { useCallback, useState } from 'react'
-import { EncryptionService } from '~/services/EncryptionService'
 import { Button } from '~/components/Button'
 import styles from './styles.module.css'
 
 export const SenderScreen = () => {
   const [content, setContent] = useState('')
-  const [pin, setPin] = useState('')
-  const [isEncrypted, setIsEncrypted] = useState(false)
+  const isEncrypted = false // 暫定的に暗号化は無効化
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-
-  const validatePin = (pin: string) => {
-    return /^\d{4}$/.test(pin)
-  }
 
   const generateQRCode = useCallback(async () => {
     try {
@@ -22,22 +16,13 @@ export const SenderScreen = () => {
         return
       }
 
-      if (isEncrypted && !validatePin(pin)) {
-        setError('4桁の数字を入力してください')
-        return
-      }
-
       let qrData: string
-      if (isEncrypted) {
-        qrData = EncryptionService.encrypt(content, pin, true)
-      } else {
-        qrData = JSON.stringify({
-          content,
-          isSecret: false,
-          timestamp: new Date().toISOString(),
-          encrypted: false,
-        })
-      }
+      qrData = JSON.stringify({
+        content,
+        isSecret: false,
+        timestamp: new Date().toISOString(),
+        encrypted: false,
+      })
 
       const qrCode = await QRCode.toDataURL(qrData, {
         errorCorrectionLevel: 'M',
@@ -51,16 +36,11 @@ export const SenderScreen = () => {
       setError('QRコードの生成に失敗しました')
       console.error('QR code generation failed:', err)
     }
-  }, [content, pin, isEncrypted])
+  }, [content, isEncrypted])
 
   const resetQRCode = () => {
     setQrCodeUrl(null)
     setError(null)
-  }
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^\d]/g, '').slice(0, 4)
-    setPin(value)
   }
 
   return (
@@ -87,51 +67,11 @@ export const SenderScreen = () => {
                 />
               </div>
 
-              <div className={styles.checkboxGroup}>
-                <input
-                  id="isEncrypted"
-                  type="checkbox"
-                  className={styles.checkbox}
-                  checked={isEncrypted}
-                  onChange={(e) => {
-                    setIsEncrypted(e.target.checked)
-                    if (!e.target.checked) {
-                      setPin('')
-                    }
-                  }}
-                />
-                <div>
-                  <label className={styles.label} htmlFor="isEncrypted">
-                    パスワード等の秘匿情報（暗号化）
-                  </label>
-                  <div className={styles.description}>
-                    テキストを暗号化してQRコードに保存し、履歴に残さない設定にします
-                  </div>
-                </div>
-              </div>
-
-              {isEncrypted && (
-                <div className={styles.inputGroup}>
-                  <label className={styles.label} htmlFor="pin">
-                    暗号化キー（4桁の数字）
-                  </label>
-                  <input
-                    id="pin"
-                    type="text"
-                    className={styles.pinInput}
-                    value={pin}
-                    onChange={handlePinChange}
-                    placeholder="0000"
-                    inputMode="numeric"
-                  />
-                </div>
-              )}
-
               <Button
                 variant="primary"
                 size="medium"
                 onClick={generateQRCode}
-                disabled={!content.trim() || (isEncrypted && !validatePin(pin))}
+                disabled={!content.trim()}
               >
                 QRコード生成
               </Button>

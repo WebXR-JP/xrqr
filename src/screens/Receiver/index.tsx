@@ -4,7 +4,7 @@ import { useQRScanner } from '~/hooks/useQRScanner'
 import { Button } from '~/components/Button'
 import type { HistoryItem } from '~/types'
 import styles from './styles.module.css'
-import { copyToClipboard } from '~/utils'
+import { HistoryList } from './components/HistoryList'
 
 type Tab = 'camera' | 'history'
 
@@ -19,12 +19,7 @@ export const ReceiverScreen = () => {
   const [activeTab, setActiveTab] = useState<Tab>('camera')
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [showToast, setShowToast] = useState(false)
-  const {
-    history,
-    addHistoryItem,
-    removeHistoryItem,
-    clearHistory,
-  } = useLocalStorage()
+  const { addHistoryItem } = useLocalStorage()
 
   const handleScan = useCallback(
     async (data: string) => {
@@ -34,27 +29,24 @@ export const ReceiverScreen = () => {
 
         let qrData: QRData
 
-        // まず暗号化されていないJSONとしてパースを試みる
         qrData = JSON.parse(data)
-        if (!qrData.encrypted) {
-          await navigator.clipboard.writeText(qrData.content)
+        await navigator.clipboard.writeText(qrData.content)
 
-          const historyItem: HistoryItem = {
-            id: crypto.randomUUID(),
-            content: qrData.content,
-            preview: qrData.content.slice(0, 50),
-            timestamp: qrData.timestamp,
-          }
-          addHistoryItem(historyItem)
-          setSuccessMessage('QRコードを読み取りました！クリップボードにコピーしました')
-          setShowToast(true)
-          // 3秒後にメッセージを消す
-          setTimeout(() => {
-            setSuccessMessage(null)
-            setShowToast(false)
-          }, 3000)
-          return
+        const historyItem: HistoryItem = {
+          id: crypto.randomUUID(),
+          content: qrData.content,
+          preview: qrData.content.slice(0, 50),
+          timestamp: qrData.timestamp,
         }
+        addHistoryItem(historyItem)
+        setSuccessMessage('QRコードを読み取りました！クリップボードにコピーしました')
+        setShowToast(true)
+        // 3秒後にメッセージを消す
+        setTimeout(() => {
+          setSuccessMessage(null)
+          setShowToast(false)
+        }, 3000)
+        return
       } catch (err) {
         console.error('QR code scanning unexpected error:', err)
       }
@@ -112,31 +104,7 @@ export const ReceiverScreen = () => {
             </div>
           </div>
         ) : (
-          <div className={styles.historyContainer}>
-            {history.length > 0 && (
-              <Button variant="secondary" size="small" onClick={clearHistory} className={styles.clearAllButton}>
-                履歴を全て削除
-              </Button>
-            )}
-            {history.map((item) => (
-              <div key={item.id} className={styles.historyItem}>
-                <div className={styles.historyItemHeader}>
-                  <span className={styles.historyItemTime}>
-                    {new Date(item.timestamp).toLocaleString()}
-                  </span>
-                  <Button variant="ghost" size="small" onClick={() => removeHistoryItem(item.id)} className={styles.deleteButton}>
-                    削除
-                  </Button>
-                </div>
-                <div
-                  className={styles.historyItemPreview}
-                  onClick={() => copyToClipboard(item.content)}
-                >
-                  {item.preview}
-                </div>
-              </div>
-            ))}
-          </div>
+          <HistoryList />
         )}
       </div>
 

@@ -13,3 +13,7 @@ export const copyToClipboard = async (content: string) => {
     console.error('Failed to copy to clipboard', err)
   }
 }
+
+export const validatePin = (pin: string) => {
+  return /^\d{4}$/.test(pin)
+}
