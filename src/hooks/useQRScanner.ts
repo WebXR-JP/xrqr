@@ -1,7 +1,7 @@
 import jsQR from 'jsqr'
 import { useEffect, useRef, useState, useCallback } from 'react'
 
-export const useQRScanner = (onScan: (data: string) => void) => {
+export const useQRScanner = (onScan: (data: string) => void, options?: { keepScanning?: boolean }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isScanning, setIsScanning] = useState(false)
@@ -211,7 +211,9 @@ export const useQRScanner = (onScan: (data: string) => void) => {
             if (code && code.data && code.data.trim().length >= 10) {
               addDebugInfo(`✅ QRコード検出成功 (回転角度: ${angle}度)`)
               onScan(code.data)
-              stopScanning()
+              if (!options?.keepScanning) {
+                stopScanning()
+              }
               return
             }
           } else {
@@ -219,7 +221,9 @@ export const useQRScanner = (onScan: (data: string) => void) => {
             if (code && code.data && code.data.trim().length >= 10) {
               addDebugInfo('✅ QRコード検出成功')
               onScan(code.data)
-              stopScanning()
+              if (!options?.keepScanning) {
+                stopScanning()
+              }
               return
             }
           }

@@ -20,6 +20,7 @@ export const ReceiverScreen = () => {
   const [activeTab, setActiveTab] = useState<Tab>('camera')
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [showToast, setShowToast] = useState(false)
   const {
     encryptionKey,
     history,
@@ -54,8 +55,12 @@ export const ReceiverScreen = () => {
             addHistoryItem(historyItem)
             setError(null)
             setSuccessMessage('QRコードを読み取りました！クリップボードにコピーしました')
+            setShowToast(true)
             // 3秒後にメッセージを消す
-            setTimeout(() => setSuccessMessage(null), 3000)
+            setTimeout(() => {
+              setSuccessMessage(null)
+              setShowToast(false)
+            }, 3000)
             return
           }
         } catch {
@@ -79,8 +84,12 @@ export const ReceiverScreen = () => {
               addHistoryItem(historyItem)
             }
             setSuccessMessage('暗号化されたQRコードを読み取りました！クリップボードにコピーしました')
+            setShowToast(true)
             // 3秒後にメッセージを消す
-            setTimeout(() => setSuccessMessage(null), 3000)
+            setTimeout(() => {
+              setSuccessMessage(null)
+              setShowToast(false)
+            }, 3000)
             setError(null)
           } catch (decryptError) {
             // 暗号化解除に失敗した場合は、無効なQRコードとして無視
@@ -104,7 +113,7 @@ export const ReceiverScreen = () => {
     isScanning,
     error: scanError,
     debugInfo,
-  } = useQRScanner(handleScan)
+  } = useQRScanner(handleScan, { keepScanning: true })
 
   // カメラタブがアクティブかつ暗号化キーが設定されている場合、自動でスキャンを開始
   useEffect(() => {
@@ -208,7 +217,6 @@ export const ReceiverScreen = () => {
         )}
 
         {(error || scanError) && <div className={styles.error}>{error || scanError}</div>}
-        {successMessage && <div className={styles.success}>{successMessage}</div>}
       </div>
       
       {/* デバッグ情報を Portal で body に直接配置 */}
@@ -222,6 +230,14 @@ export const ReceiverScreen = () => {
           ))}
         </div>,
         document.body
+      )}
+      
+      {/* トーストメッセージ */}
+      {showToast && successMessage && (
+        <div className={styles.toast}>
+          <div className={styles.toastIcon}>✓</div>
+          <div className={styles.toastMessage}>{successMessage}</div>
+        </div>
       )}
     </>
   )
