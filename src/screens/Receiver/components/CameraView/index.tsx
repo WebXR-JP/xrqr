@@ -5,7 +5,6 @@ import { useToastDispatcher } from "~/providers/ToastDispatcher"
 import { HistoryItem } from "~/types"
 import { copyToClipboard } from "~/utils"
 import styles from "./styles.module.css"
-import { div } from "three/tsl"
 
 interface QRData {
   content: string
