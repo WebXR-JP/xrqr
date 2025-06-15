@@ -1,22 +1,13 @@
 import { useEffect, useState } from 'react'
-import type { HistoryItem } from '../types'
+import type { HistoryItem } from '~/types'
 
 export const useLocalStorage = () => {
-  const [encryptionKey, setEncryptionKeyState] = useState<string | null>(null)
   const [history, setHistoryState] = useState<HistoryItem[]>([])
 
   useEffect(() => {
-    const savedKey = localStorage.getItem('encryptionKey')
     const savedHistory = localStorage.getItem('history')
-
-    setEncryptionKeyState(savedKey)
     setHistoryState(savedHistory ? JSON.parse(savedHistory) : [])
   }, [])
-
-  const setEncryptionKey = (key: string) => {
-    localStorage.setItem('encryptionKey', key)
-    setEncryptionKeyState(key)
-  }
 
   const addHistoryItem = (item: HistoryItem) => {
     const newHistory = [item, ...history]
@@ -36,9 +27,7 @@ export const useLocalStorage = () => {
   }
 
   return {
-    encryptionKey,
     history,
-    setEncryptionKey,
     addHistoryItem,
     removeHistoryItem,
     clearHistory,
