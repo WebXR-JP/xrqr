@@ -8,7 +8,6 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [debugInfo, setDebugInfo] = useState<string[]>([])
-  const hasLoggedScanStart = useRef(false)
   const frameCount = useRef(0)
 
   const addDebugInfo = (message: string) => {
@@ -62,11 +61,7 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
         addDebugInfo('🥽 Quest環境 - デバイス個別指定でアクセス')
 
         // 後方カメラ（パススルーカメラ）を探す
-        const backCamera = videoDevices.find(device =>
-          device.label.toLowerCase().includes('back') ||
-          device.label.toLowerCase().includes('rear') ||
-          device.label.toLowerCase().includes('environment')
-        ) || videoDevices[videoDevices.length - 1] // 最後のデバイスを試行
+        const backCamera = videoDevices[videoDevices.length - 1] // 最後のデバイスを試行
 
         addDebugInfo(`🎯 選択デバイス: ${backCamera.label || 'Unknown'}`)
 
@@ -109,7 +104,6 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
 
   const stopScanning = () => {
     setIsScanning(false)
-    hasLoggedScanStart.current = false
     frameCount.current = 0
     if (videoRef.current?.srcObject) {
       const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
