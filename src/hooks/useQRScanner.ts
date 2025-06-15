@@ -173,59 +173,19 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
         }
         context?.putImageData(imageData, 0, 0)
 
-        // QRコード検出を複数の向きで試行
-        const angles = [0, 90, 180, 270]
-
         // 60フレームごとにQR検出処理状況を報告
         if (frameCount.current % 60 === 1) {
           addDebugInfo(`🔍 QRコード検出処理実行中...`)
         }
 
-        for (const angle of angles) {
-          if (angle > 0) {
-            // キャンバスを回転
-            const tempCanvas = document.createElement('canvas')
-            const tempContext = tempCanvas.getContext('2d')
-            if (!tempContext) continue
-
-            if (angle === 90 || angle === 270) {
-              tempCanvas.width = canvasHeight
-              tempCanvas.height = canvasWidth
-            } else {
-              tempCanvas.width = canvasWidth
-              tempCanvas.height = canvasHeight
-            }
-
-            tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2)
-            tempContext.rotate((angle * Math.PI) / 180)
-            tempContext.drawImage(canvas, -canvasWidth / 2, -canvasHeight / 2)
-
-            const rotatedImageData = tempContext.getImageData(
-              0,
-              0,
-              tempCanvas.width,
-              tempCanvas.height,
-            )
-            const code = jsQR(rotatedImageData.data, tempCanvas.width, tempCanvas.height)
-            if (code && code.data && code.data.trim().length >= 10) {
-              addDebugInfo(`✅ QRコード検出成功 (回転角度: ${angle}度)`)
-              onScan(code.data)
-              if (!options?.keepScanning) {
-                stopScanning()
-              }
-              return
-            }
-          } else {
-            const code = jsQR(data, canvasWidth, canvasHeight)
-            if (code && code.data && code.data.trim().length >= 10) {
-              addDebugInfo('✅ QRコード検出成功')
-              onScan(code.data)
-              if (!options?.keepScanning) {
-                stopScanning()
-              }
-              return
-            }
+        const code = jsQR(data, canvasWidth, canvasHeight)
+        if (code && code.data && code.data.trim().length >= 10) {
+          addDebugInfo('✅ QRコード検出成功')
+          onScan(code.data)
+          if (!options?.keepScanning) {
+            stopScanning()
           }
+          return
         }
       }
     }
