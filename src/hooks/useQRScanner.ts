@@ -22,7 +22,7 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
       let stream: MediaStream
       if (isHMDBrowser && videoDevices.length > 0) {
         // TODO: HMD環境でのカメラデバイス選択ロジック
-        const backCamera = videoDevices[videoDevices.length - 1]
+        const backCamera = videoDevices[0]
         stream = await navigator.mediaDevices.getUserMedia({
           video: { deviceId: { exact: backCamera.deviceId } }
         })

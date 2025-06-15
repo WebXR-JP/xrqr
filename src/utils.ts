@@ -16,7 +16,7 @@ export const copyToClipboard = async (content: string) => {
   try {
     await navigator.clipboard.writeText(content)
   } catch (err) {
-    console.error('Failed to copy to clipboard', err)
+    throw new Error('クリップボードへのコピーに失敗しました。')
   }
 }
 

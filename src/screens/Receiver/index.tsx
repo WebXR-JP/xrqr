@@ -5,6 +5,8 @@ import { Button } from '~/components/Button'
 import type { HistoryItem } from '~/types'
 import styles from './styles.module.css'
 import { HistoryList } from './components/HistoryList'
+import { useToastDispatcher } from '~/providers/ToastDispatcher'
+import { copyToClipboard } from '~/utils'
 
 type Tab = 'camera' | 'history'
 
@@ -17,9 +19,8 @@ interface QRData {
 
 export const ReceiverScreen = () => {
   const [activeTab, setActiveTab] = useState<Tab>('camera')
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  const [showToast, setShowToast] = useState(false)
   const { addHistoryItem } = useLocalStorage()
+  const { dispatch } = useToastDispatcher()
 
   const handleScan = useCallback(
     async (data: string) => {
@@ -27,10 +28,8 @@ export const ReceiverScreen = () => {
         // データが空または短すぎる場合は無視
         if (!data || data.trim().length < 10) return
 
-        let qrData: QRData
-
-        qrData = JSON.parse(data)
-        await navigator.clipboard.writeText(qrData.content)
+        const qrData = JSON.parse(data) as QRData
+        await copyToClipboard(qrData.content)
 
         const historyItem: HistoryItem = {
           id: crypto.randomUUID(),
@@ -39,16 +38,18 @@ export const ReceiverScreen = () => {
           timestamp: qrData.timestamp,
         }
         addHistoryItem(historyItem)
-        setSuccessMessage('QRコードを読み取りました！クリップボードにコピーしました')
-        setShowToast(true)
-        // 3秒後にメッセージを消す
-        setTimeout(() => {
-          setSuccessMessage(null)
-          setShowToast(false)
-        }, 3000)
+
+        dispatch({
+          message: 'QRコードを読み取りました！クリップボードにコピーしました',
+          type: 'success',
+        })
         return
       } catch (err) {
-        console.error('QR code scanning unexpected error:', err)
+        dispatch({
+          message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
+          type: 'error',
+        })
+        return
       }
     },
     [addHistoryItem],
@@ -69,52 +70,42 @@ export const ReceiverScreen = () => {
   }, [activeTab, isScanning])
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.tabs}>
-          <Button
-            variant={activeTab === 'camera' ? 'primary' : 'secondary'}
-            size="medium"
-            onClick={() => setActiveTab('camera')}
-            className={styles.tab}
-          >
-            カメラ
-          </Button>
-          <Button
-            variant={activeTab === 'history' ? 'primary' : 'secondary'}
-            size="medium"
-            onClick={() => setActiveTab('history')}
-            className={styles.tab}
-          >
-            履歴
-          </Button>
-        </div>
-
-        {activeTab === 'camera' ? (
-          <div>
-            <div className={styles.cameraContainer}>
-              <video
-                ref={videoRef}
-                className={styles.video}
-                playsInline
-                autoPlay
-              />
-              <canvas ref={canvasRef} className={styles.canvas} />
-              <div className={styles.scanOverlay} />
-            </div>
-          </div>
-        ) : (
-          <HistoryList />
-        )}
+    <div className={styles.container}>
+      <div className={styles.tabs}>
+        <Button
+          variant={activeTab === 'camera' ? 'primary' : 'secondary'}
+          size="medium"
+          onClick={() => setActiveTab('camera')}
+          className={styles.tab}
+        >
+          カメラ
+        </Button>
+        <Button
+          variant={activeTab === 'history' ? 'primary' : 'secondary'}
+          size="medium"
+          onClick={() => setActiveTab('history')}
+          className={styles.tab}
+        >
+          履歴
+        </Button>
       </div>
 
-      {/* トーストメッセージ */}
-      {showToast && successMessage && (
-        <div className={styles.toast}>
-          <div className={styles.toastIcon}>✓</div>
-          <div className={styles.toastMessage}>{successMessage}</div>
+      {activeTab === 'camera' ? (
+        <div>
+          <div className={styles.cameraContainer}>
+            <video
+              ref={videoRef}
+              className={styles.video}
+              playsInline
+              autoPlay
+            />
+            <canvas ref={canvasRef} className={styles.canvas} />
+            <div className={styles.scanOverlay} />
+          </div>
         </div>
+      ) : (
+        <HistoryList />
       )}
-    </>
+    </div>
   )
 }
