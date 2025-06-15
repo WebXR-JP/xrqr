@@ -1,25 +1,11 @@
-import { useState } from 'react'
 import styles from './App.module.css'
-import { HomeScreen } from './screens/Home'
 import { ReceiverScreen } from './screens/Receiver'
 import { SenderScreen } from './screens/Sender'
 import BackgroundShader from '~/components/BackgroundShader'
-
-type DeviceType = 'sender' | 'receiver' | null
+import { checkHMDBrowser } from './utils'
 
 export const App = () => {
-  const [deviceType, setDeviceType] = useState<DeviceType>(null)
-
-  const renderScreen = () => {
-    switch (deviceType) {
-      case 'sender':
-        return <SenderScreen />
-      case 'receiver':
-        return <ReceiverScreen />
-      default:
-        return <HomeScreen onDeviceTypeSelect={setDeviceType} />
-    }
-  }
+  const isHMDBrowser = checkHMDBrowser()
 
   return (
     <div className={styles.container}>
@@ -30,9 +16,15 @@ export const App = () => {
         </h1>
         <p className={styles.subtitle}>PC・スマホからVRゴーグルへ瞬間転送 - QRコードでかんたんコピー</p>
       </header>
-      <main className={styles.main}>{renderScreen()}</main>
+      <main className={styles.main}>
+        {isHMDBrowser ? (
+          <ReceiverScreen />
+        ) : (
+          <SenderScreen />
+        )}
+      </main>
       <footer className={styles.footer}>
-        <p className={styles.copyright}>© 2024 WebXR-JP</p>
+        <p className={styles.copyright}>© {new Date().getFullYear()} WebXR-JP</p>
       </footer>
     </div>
   )

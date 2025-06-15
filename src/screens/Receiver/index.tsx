@@ -178,11 +178,11 @@ export const ReceiverScreen = () => {
         {activeTab === 'camera' ? (
           <div>
             <div className={styles.cameraContainer}>
-              <video 
-                ref={videoRef} 
+              <video
+                ref={videoRef}
                 className={styles.video}
                 playsInline
-                autoPlay 
+                autoPlay
               />
               <canvas ref={canvasRef} className={styles.canvas} />
               <div className={styles.scanOverlay} />
@@ -218,7 +218,7 @@ export const ReceiverScreen = () => {
 
         {(error || scanError) && <div className={styles.error}>{error || scanError}</div>}
       </div>
-      
+
       {/* デバッグ情報を Portal で body に直接配置 */}
       {import.meta.env.DEV && debugInfo.length > 0 && createPortal(
         <div className={styles.debugContainer}>
@@ -231,7 +231,7 @@ export const ReceiverScreen = () => {
         </div>,
         document.body
       )}
-      
+
       {/* トーストメッセージ */}
       {showToast && successMessage && (
         <div className={styles.toast}>

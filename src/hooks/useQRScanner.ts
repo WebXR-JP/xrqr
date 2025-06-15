@@ -1,5 +1,6 @@
 import jsQR from 'jsqr'
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { checkQuestBrowser } from '~/utils'
 
 export const useQRScanner = (onScan: (data: string) => void, options?: { keepScanning?: boolean }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -53,24 +54,22 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
       addDebugInfo(`📹 カメラデバイス: ${videoDevices.length}個検出`)
 
       // Quest/HMD環境の検出
-      const isQuestBrowser = navigator.userAgent.toLowerCase().includes('quest') || 
-                             navigator.userAgent.toLowerCase().includes('oculus') || 
-                             navigator.userAgent.toLowerCase().includes('meta')
+      const isQuestBrowser = checkQuestBrowser()
 
       let stream: MediaStream
 
       if (isQuestBrowser && videoDevices.length > 0) {
         addDebugInfo('🥽 Quest環境 - デバイス個別指定でアクセス')
-        
+
         // 後方カメラ（パススルーカメラ）を探す
-        const backCamera = videoDevices.find(device => 
-          device.label.toLowerCase().includes('back') || 
+        const backCamera = videoDevices.find(device =>
+          device.label.toLowerCase().includes('back') ||
           device.label.toLowerCase().includes('rear') ||
           device.label.toLowerCase().includes('environment')
         ) || videoDevices[videoDevices.length - 1] // 最後のデバイスを試行
 
         addDebugInfo(`🎯 選択デバイス: ${backCamera.label || 'Unknown'}`)
-        
+
         // 参考コードと同じアプローチ：deviceIdで明示的に指定
         stream = await navigator.mediaDevices.getUserMedia({
           video: { deviceId: { exact: backCamera.deviceId } }
@@ -82,24 +81,24 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
           video: { facingMode: 'environment' }
         })
       }
-      
+
       addDebugInfo('✅ カメラストリーム取得成功')
 
       if (videoRef.current) {
         const video = videoRef.current
-        
+
         // 参考コードと同じ順序：属性設定→ストリーム設定
         addDebugInfo('📺 video属性設定中...')
         video.autoplay = true
         video.playsInline = true
-        
+
         addDebugInfo('📺 ストリーム設定中...')
         video.srcObject = stream
-        
+
         // 参考コードのアプローチ：autoplayに任せて、シンプルにスキャン開始
         addDebugInfo('🚀 スキャン処理を開始します')
         setIsScanning(true)
-        
+
         // scanFrame()はuseEffectで自動実行されるので、ここでは呼ばない
       }
     } catch (error) {
@@ -138,7 +137,7 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
 
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
       frameCount.current++
-      
+
       // 30フレームごとにフレーム処理状況を報告
       if (frameCount.current % 30 === 1) {
         addDebugInfo(`🔄 フレーム処理中... (${frameCount.current}フレーム目)`)
@@ -176,12 +175,12 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
 
         // QRコード検出を複数の向きで試行
         const angles = [0, 90, 180, 270]
-        
+
         // 60フレームごとにQR検出処理状況を報告
         if (frameCount.current % 60 === 1) {
           addDebugInfo(`🔍 QRコード検出処理実行中...`)
         }
-        
+
         for (const angle of angles) {
           if (angle > 0) {
             // キャンバスを回転
