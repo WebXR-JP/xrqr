@@ -1,4 +1,10 @@
 export const checkHMDBrowser = () => {
+  // url に dev=true が含まれている場合は HMDBrowser とみなす
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.has('dev') && urlParams.get('dev') === 'true') {
+    return true
+  }
+
   return (
     navigator.userAgent.toLowerCase().includes('quest') ||
     navigator.userAgent.toLowerCase().includes('oculus') ||
