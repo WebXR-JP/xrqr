@@ -1,14 +1,3 @@
-.contentWrapper {
-  display: flex;
-  gap: 3rem;
-  align-items: flex-start;
-}
-
-.formSection {
-  flex: 1;
-  min-width: 0;
-}
-
 .form {
   flex: 1;
   display: flex;

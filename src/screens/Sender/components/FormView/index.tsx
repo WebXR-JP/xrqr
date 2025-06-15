@@ -18,35 +18,31 @@ export const FormView = ({ onSubmit }: Props) => {
   }, [])
 
   return (
-    <div className={styles.contentWrapper}>
-      <div className={styles.formSection}>
-        <div className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label} htmlFor="content">
-              テキスト
-            </label>
-            <div className={styles.description}>
-              VRヘッドセットのクリップボードに送信したいテキストを入力してください
-            </div>
-            <textarea
-              id="content"
-              className={styles.textArea}
-              value={content}
-              onChange={handleChangeContent}
-              placeholder="送信したいテキストを入力してください"
-            />
-          </div>
-
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={handleSubmit}
-            disabled={!content.trim()}
-          >
-            QRコード生成
-          </Button>
+    <div className={styles.form}>
+      <div className={styles.inputGroup}>
+        <label className={styles.label} htmlFor="content">
+          テキスト
+        </label>
+        <div className={styles.description}>
+          VRヘッドセットのクリップボードに送信したいテキストを入力してください
         </div>
+        <textarea
+          id="content"
+          className={styles.textArea}
+          value={content}
+          onChange={handleChangeContent}
+          placeholder="送信したいテキストを入力してください"
+        />
       </div>
+
+      <Button
+        variant="primary"
+        size="medium"
+        onClick={handleSubmit}
+        disabled={!content.trim()}
+      >
+        QRコード生成
+      </Button>
     </div>
   )
 }
