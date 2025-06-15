@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import styles from './styles.module.css'
 
 interface Toast {
@@ -24,9 +24,16 @@ interface Props {
   children?: React.ReactNode
 }
 
-export const ToastDispatcher = ({ children }: Props) => {
+export const ToastDispatcherProvider = ({ children }: Props) => {
   const [toast, setToast] = useState<Toast | null>(null)
   const dispatch = useCallback((newToast: Toast) => { setToast(newToast) }, [])
+
+  useEffect(() => {
+    if (!toast) return
+    // トーストを3秒後に自動で消す
+    const timer = setTimeout(() => { setToast(null) }, 3000)
+    return () => clearTimeout(timer)
+  }, [toast])
 
   return (
     <ToastDispatcherContext.Provider value={{ toast, dispatch }}>
