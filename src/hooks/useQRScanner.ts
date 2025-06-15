@@ -127,14 +127,6 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
 
-    // 初回のデバッグ情報を表示
-    if (!hasLoggedScanStart.current) {
-      addDebugInfo(`🔍 スキャンフレーム開始: readyState=${video.readyState}, HAVE_ENOUGH_DATA=${video.HAVE_ENOUGH_DATA}`)
-      addDebugInfo(`📐 Video解像度: ${video.videoWidth}x${video.videoHeight}`)
-      addDebugInfo(`📺 Video状態: paused=${video.paused}, ended=${video.ended}`)
-      hasLoggedScanStart.current = true
-    }
-
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
       frameCount.current++
 
@@ -158,27 +150,12 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
       // グレースケール変換とコントラスト強調
       const imageData = context?.getImageData(0, 0, canvasWidth, canvasHeight)
       if (imageData) {
-        const data = imageData.data
-        for (let i = 0; i < data.length; i += 4) {
-          // グレースケール変換
-          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114
-
-          // コントラスト強調
-          const contrast = 1.5
-          const factor = (259 * (contrast + 255)) / (255 * (259 - contrast))
-          const newGray = factor * (gray - 128) + 128
-
-          // RGBすべてに同じ値を設定
-          data[i] = data[i + 1] = data[i + 2] = Math.max(0, Math.min(255, newGray))
-        }
-        context?.putImageData(imageData, 0, 0)
-
         // 60フレームごとにQR検出処理状況を報告
         if (frameCount.current % 60 === 1) {
           addDebugInfo(`🔍 QRコード検出処理実行中...`)
         }
 
-        const code = jsQR(data, canvasWidth, canvasHeight)
+        const code = jsQR(imageData.data, canvasWidth, canvasHeight)
         if (code && code.data && code.data.trim().length >= 10) {
           addDebugInfo('✅ QRコード検出成功')
           onScan(code.data)
@@ -197,8 +174,11 @@ export const useQRScanner = (onScan: (data: string) => void, options?: { keepSca
 
   // isScanning状態が変更されたときにscanFrame()を実行
   useEffect(() => {
-    if (isScanning) {
+    if (isScanning && videoRef.current) {
       addDebugInfo('✅ isScanning=true検出 - scanFrame開始')
+      addDebugInfo(`🔍 スキャンフレーム開始: readyState=${videoRef.current.readyState}, HAVE_ENOUGH_DATA=${videoRef.current.HAVE_ENOUGH_DATA}`)
+      addDebugInfo(`📐 Video解像度: ${videoRef.current.videoWidth}x${videoRef.current.videoHeight}`)
+      addDebugInfo(`📺 Video状態: paused=${videoRef.current.paused}, ended=${videoRef.current.ended}`)
       scanFrame()
     }
   }, [isScanning])
