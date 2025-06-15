@@ -3,9 +3,7 @@ import { useLocalStorage } from "~/hooks/useLocalStorage"
 import { copyToClipboard } from "~/utils"
 import styles from "./styles.module.css"
 
-interface Props {}
-
-export const HistoryList = ({}: Props) => {
+export const HistoryList = () => {
   const { history, removeHistoryItem, clearHistory } = useLocalStorage()
 
   return (
