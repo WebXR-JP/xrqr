@@ -1,53 +1,33 @@
-import { useEffect, useState } from 'react'
-import type { HistoryItem } from '../types'
-
-interface LocalStorageState {
-  encryptionKey: string | null
-  history: HistoryItem[]
-}
+import { useCallback, useEffect, useState } from 'react'
+import type { HistoryItem } from '~/types'
 
 export const useLocalStorage = () => {
-  const [state, setState] = useState<LocalStorageState>({
-    encryptionKey: null,
-    history: [],
-  })
+  const [history, setHistoryState] = useState<HistoryItem[]>([])
 
-  useEffect(() => {
-    const savedKey = localStorage.getItem('encryptionKey')
-    const savedHistory = localStorage.getItem('history')
+  const addHistoryItem = useCallback((item: HistoryItem) => {
+    const newHistory = [item, ...history]
+    localStorage.setItem('history', JSON.stringify(newHistory))
+    setHistoryState(newHistory)
+  }, [history])
 
-    setState({
-      encryptionKey: savedKey,
-      history: savedHistory ? JSON.parse(savedHistory) : [],
-    })
+  const removeHistoryItem = useCallback((id: string) => {
+    const newHistory = history.filter((item) => item.id !== id)
+    localStorage.setItem('history', JSON.stringify(newHistory))
+    setHistoryState(newHistory)
+  }, [history])
+
+  const clearHistory = useCallback(() => {
+    localStorage.removeItem('history')
+    setHistoryState([])
   }, [])
 
-  const setEncryptionKey = (key: string) => {
-    localStorage.setItem('encryptionKey', key)
-    setState((prev) => ({ ...prev, encryptionKey: key }))
-  }
-
-  const addHistoryItem = (item: HistoryItem) => {
-    const newHistory = [item, ...state.history]
-    localStorage.setItem('history', JSON.stringify(newHistory))
-    setState((prev) => ({ ...prev, history: newHistory }))
-  }
-
-  const removeHistoryItem = (id: string) => {
-    const newHistory = state.history.filter((item) => item.id !== id)
-    localStorage.setItem('history', JSON.stringify(newHistory))
-    setState((prev) => ({ ...prev, history: newHistory }))
-  }
-
-  const clearHistory = () => {
-    localStorage.removeItem('history')
-    setState((prev) => ({ ...prev, history: [] }))
-  }
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('history')
+    setHistoryState(savedHistory ? JSON.parse(savedHistory) : [])
+  }, [])
 
   return {
-    encryptionKey: state.encryptionKey,
-    history: state.history,
-    setEncryptionKey,
+    history,
     addHistoryItem,
     removeHistoryItem,
     clearHistory,

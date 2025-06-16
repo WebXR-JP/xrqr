@@ -1,3 +1,20 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: unset;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
 .container {
   min-width: 100vw;
   min-height: 100vh;
@@ -46,42 +63,17 @@
 }
 
 .main {
-  padding: 0;
   background: rgba(255, 255, 255, 0.6);
   border-radius: 20px;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  max-width: 800px;
+  max-width: 600px;
   width: 100%;
-}
-
-.backButton {
-  position: absolute;
-  left: 1.5rem;
-  background: rgba(255, 255, 255, 0.9);
-  color: #64748b;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  padding: 0.75rem 1.25rem;
-  border-radius: 15px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
-  font-family: inherit;
-  transition: all 0.3s ease-in-out;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.backButton:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 255, 255, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem 2.5rem 2.5rem;
 }
 
 .footer {
@@ -95,4 +87,11 @@
   color: #64748b;
   margin: 0;
   font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .main {
+    width: auto;
+    padding: 1.5rem;
+  }
 }
