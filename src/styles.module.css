@@ -80,6 +80,10 @@ p {
   margin-top: auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .copyright {
@@ -87,6 +91,24 @@ p {
   color: #64748b;
   margin: 0;
   font-weight: 400;
+}
+
+.separator {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.repoLink {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.repoLink:hover {
+  color: #1e293b;
 }
 
 @media (max-width: 768px) {

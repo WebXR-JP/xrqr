@@ -27,6 +27,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </main>
         <footer className={styles.footer}>
           <p className={styles.copyright}>© {new Date().getFullYear()} WebXR-JP</p>
+          <span className={styles.separator}>|</span>
+          <a href="https://github.com/WebXR-JP/xrqr" target="_blank" rel="noopener noreferrer" className={styles.repoLink}>
+            GitHub
+          </a>
         </footer>
       </div>
     </ToastDispatcherProvider>
