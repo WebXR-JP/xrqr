@@ -18,13 +18,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </h1>
           <p className={styles.subtitle}>PC・スマホからVRゴーグルへ瞬間転送 - QRコードでかんたんコピー</p>
         </header>
-        <main className={styles.main}>
-          {checkHMDBrowser() ? (
-            <ReceiverScreen />
-          ) : (
-            <SenderScreen />
-          )}
-        </main>
+        {checkHMDBrowser() ? (
+          <ReceiverScreen />
+        ) : (
+          <SenderScreen />
+        )}
         <footer className={styles.footer}>
           <p className={styles.copyright}>© {new Date().getFullYear()} WebXR-JP</p>
           <span className={styles.separator}>|</span>

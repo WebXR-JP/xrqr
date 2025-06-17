@@ -3,6 +3,7 @@ import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
 import { useToastDispatcher } from "~/providers/ToastDispatcher"
 import { copyToClipboard } from "~/utils"
+import { Card } from "~/components/Card"
 import styles from "./styles.module.css"
 
 interface QRData {
@@ -34,8 +35,9 @@ export const CameraView = () => {
       await copyToClipboard(content)
       setScannable(false)
 
+      const previewText = content.length > 20 ? content.substring(0, 20) + '...' : content
       dispatch({
-        message: 'QRコードを読み取りました！クリップボードにコピーしました',
+        message: `QRコードを読み取りました！「${previewText}」をクリップボードにコピーしました`,
         type: 'success',
       })
       return
@@ -59,13 +61,7 @@ export const CameraView = () => {
   }, [scanable])
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>QRコードリーダー</h1>
-        <p className={styles.description}>
-          スマホやPCのQRコードを読み取って、クリップボードにコピーします。
-        </p>
-      </div>
+    <Card title="QRコードリーダー">
       <div className={styles.cameraContainer}>
         <video
           ref={videoRef}
@@ -75,6 +71,9 @@ export const CameraView = () => {
         />
         <div className={styles.scanOverlay} />
       </div>
-    </div>
+      <p className={styles.description}>
+        スマホやPCのQRコードを読み取って、クリップボードにコピーします。
+      </p>
+    </Card>
   )
 }
