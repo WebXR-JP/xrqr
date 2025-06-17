@@ -50,35 +50,21 @@ p {
 }
 
 .titleImage {
-  height: 8rem;
+  height: 6rem;
   width: auto;
 }
 
 .subtitle {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 400;
   margin: 0;
   color: #374151;
   letter-spacing: 0.05em;
 }
 
-.main {
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  max-width: 600px;
-  width: 100%;
-  padding: 1.5rem 2.5rem 2.5rem;
-}
-
 .footer {
   margin-top: auto;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   display: flex;
   align-items: center;

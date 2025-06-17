@@ -2,7 +2,7 @@ import QRCode from 'qrcode'
 import { useCallback, useState } from 'react'
 import { FormView } from './components/FormView'
 import { QRView } from './components/QRView'
-import styles from './styles.module.css'
+import { Card } from '~/components/Card'
 
 export const SenderScreen = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
@@ -33,9 +33,7 @@ export const SenderScreen = () => {
   }, [setQrCodeUrl])
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>QRコード生成</h1>
-
+    <Card title="QRコード生成">
       {!qrCodeUrl ? (
         <FormView onSubmit={handleSubmit} />
       ) : (
@@ -44,6 +42,6 @@ export const SenderScreen = () => {
           onClickResetQRCode={handleClickResetQRCode}
         />
       )}
-    </div>
+    </Card>
   )
 }
