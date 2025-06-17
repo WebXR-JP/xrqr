@@ -26,7 +26,12 @@ export const validatePin = (pin: string) => {
 
 export const startScanning = async (video: HTMLVideoElement) => {
   try {
-    // 利用可能なデバイスを確認
+    // まず基本的なカメラの許可を取得
+    let stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' } // 背面カメラを優先
+    })
+
+    // 許可が得られた後、利用可能なデバイスを確認
     const devices = await navigator.mediaDevices.enumerateDevices()
     const videoDevices = devices.filter(device => device.kind === 'videoinput')
 
@@ -34,10 +39,23 @@ export const startScanning = async (video: HTMLVideoElement) => {
       throw new Error('カメラデバイスが見つかりません')
     }
 
-    const camera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0]
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: camera.deviceId }
-    })
+    // 背面カメラを探す（許可後はラベルが見える）
+    const backCamera = videoDevices.find(device =>
+      device.label.toLowerCase().includes('back') ||
+      device.label.toLowerCase().includes('rear') ||
+      device.label.toLowerCase().includes('environment')
+    )
+
+    // 背面カメラが見つかった場合は、ストリームを切り替え
+    if (backCamera && backCamera.deviceId) {
+      // 現在のストリームを停止
+      stream.getTracks().forEach(track => track.stop())
+
+      // 背面カメラでストリームを再取得
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: backCamera.deviceId } }
+      })
+    }
 
     if (video) {
       video.autoplay = true
