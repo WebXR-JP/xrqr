@@ -13,7 +13,7 @@ interface QRData {
   encrypted?: boolean
 }
 
-export const CameraView = () => {
+export const CameraCard = () => {
   const [scanable, setScannable] = useState(true)
   const { dispatch } = useToastDispatcher()
   const { videoRef, codeData } = useQRScanner()

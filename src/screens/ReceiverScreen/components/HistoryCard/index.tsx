@@ -3,7 +3,7 @@ import { useLocalStorage } from "~/hooks/useLocalStorage"
 import { copyToClipboard } from "~/utils"
 import styles from "./styles.module.css"
 
-export const HistoryList = () => {
+export const HistoryCard = () => {
   const { history, removeHistoryItem, clearHistory } = useLocalStorage()
 
   return (
