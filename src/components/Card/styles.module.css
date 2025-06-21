@@ -11,6 +11,7 @@
   max-width: 600px;
   width: 100%;
   padding: 1.2rem 1.8rem 1.8rem;
+  box-sizing: border-box;
 }
 
 .header {
@@ -40,4 +41,10 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    border-radius: 1rem;
+  }
 }
