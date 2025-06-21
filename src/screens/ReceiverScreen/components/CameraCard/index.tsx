@@ -16,7 +16,14 @@ interface QRData {
 export const CameraCard = () => {
   const [scanable, setScannable] = useState(true)
   const { dispatch } = useToastDispatcher()
-  const { videoRef, codeData } = useQRScanner()
+  const { videoRef, codeData, availableCameras, currentCameraId, switchCamera } = useQRScanner()
+
+  const handleCameraChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const deviceId = event.target.value
+    if (deviceId && deviceId !== currentCameraId) {
+      switchCamera(deviceId)
+    }
+  }
 
   useAsync(async () => {
     if (!scanable) return
@@ -70,6 +77,19 @@ export const CameraCard = () => {
           autoPlay
         />
         <div className={styles.scanOverlay} />
+        {availableCameras.length > 1 && (
+          <select
+            className={styles.cameraSelect}
+            value={currentCameraId}
+            onChange={handleCameraChange}
+          >
+            {availableCameras.map((camera) => (
+              <option key={camera.deviceId} value={camera.deviceId}>
+                {camera.label}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
       <p className={styles.description}>
         スマホやPCのQRコードを読み取って、クリップボードにコピーします。

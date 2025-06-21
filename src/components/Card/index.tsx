@@ -2,13 +2,14 @@ import styles from './styles.module.css'
 
 interface Props {
   children?: React.ReactNode
+  className?: string
   title?: string
   description?: string
 }
 
-export const Card = ({ children, title, description }: Props) => {
+export const Card = ({ children, title, description, className }: Props) => {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className}`}>
       {title || description ? (
         <div className={styles.header}>
           {title ? (

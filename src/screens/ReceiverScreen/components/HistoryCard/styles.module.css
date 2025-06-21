@@ -1,7 +1,5 @@
-.historyContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.container {
+  max-width: 200px;
 }
 
 .historyItem {

@@ -24,7 +24,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  align-items: center;
+  align-items: stretch;
 }
 
 .header {

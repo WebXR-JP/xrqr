@@ -1,13 +1,14 @@
 import { Button } from "~/components/Button"
 import { useLocalStorage } from "~/hooks/useLocalStorage"
 import { copyToClipboard } from "~/utils"
+import { Card } from "~/components/Card"
 import styles from "./styles.module.css"
 
 export const HistoryCard = () => {
   const { history, removeHistoryItem, clearHistory } = useLocalStorage()
 
   return (
-    <div className={styles.historyContainer}>
+    <Card title="読み込み履歴" className={styles.container}>
       {history.length > 0 && (
         <Button variant="secondary" size="small" onClick={clearHistory} className={styles.clearAllButton}>
           履歴を全て削除
@@ -31,6 +32,6 @@ export const HistoryCard = () => {
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   )
 }

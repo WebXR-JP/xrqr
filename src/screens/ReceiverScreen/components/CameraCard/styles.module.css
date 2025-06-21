@@ -4,6 +4,8 @@
   align-items: center;
   justify-content: center;
   gap: 1.2rem;
+  max-width: 500px;
+  width: 100%;
 }
 
 .header {
@@ -79,4 +81,27 @@
   bottom: -2px;
   right: -2px;
   border-width: 0 4px 4px 0;
+}
+
+.cameraSelect {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(209, 213, 219, 0.2);
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  font-size: 0.75rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  max-width: 150px;
+  text-overflow: ellipsis;
+}
+
+.cameraSelect:focus {
+  outline: 1px solid #2563eb;
+  outline-offset: 2px;
 }

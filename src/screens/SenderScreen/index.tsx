@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { FormView } from './components/FormView'
 import { QRView } from './components/QRView'
 import { Card } from '~/components/Card'
+import styles from './styles.module.css'
 
 export const SenderScreen = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
@@ -33,7 +34,7 @@ export const SenderScreen = () => {
   }, [setQrCodeUrl])
 
   return (
-    <Card title="QRコード生成">
+    <Card title="QRコード生成" className={styles.container}>
       {!qrCodeUrl ? (
         <FormView onSubmit={handleSubmit} />
       ) : (
