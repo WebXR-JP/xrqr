@@ -1,5 +1,7 @@
 .container {
-  max-width: 200px;
+  max-width: 300px;
+  width: 100%;
+  overflow-y: scroll;
 }
 
 .historyItem {

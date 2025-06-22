@@ -1,71 +1,9 @@
-import { useEffect, useState } from "react"
-import { useAsync } from "react-use"
-import { useQRScanner } from "~/hooks/useQRScanner"
-import { useToastDispatcher } from "~/providers/ToastDispatcher"
-import { copyToClipboard } from "~/utils"
 import { Card } from "~/components/Card"
+import { useCameraCard } from "./hooks"
 import styles from "./styles.module.css"
 
-interface QRData {
-  content: string
-  isSecret: boolean
-  timestamp: string
-  encrypted?: boolean
-}
-
 export const CameraCard = () => {
-  const [scanable, setScannable] = useState(true)
-  const { dispatch } = useToastDispatcher()
-  const { videoRef, codeData, availableCameras, currentCameraId, switchCamera } = useQRScanner()
-
-  const handleCameraChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const deviceId = event.target.value
-    if (deviceId && deviceId !== currentCameraId) {
-      switchCamera(deviceId)
-    }
-  }
-
-  useAsync(async () => {
-    if (!scanable) return
-    try {
-      if (!codeData) return
-
-      let content = ''
-      try {
-        // QRコードのデータがJSON形式であることを確認
-        content = (JSON.parse(codeData) as QRData).content
-      } catch (e) {
-        // JSON形式でない場合はそのまま使用
-        content = codeData
-      }
-
-      await copyToClipboard(content)
-      setScannable(false)
-
-      const previewText = content.length > 20 ? content.substring(0, 20) + '...' : content
-      dispatch({
-        message: `QRコードを読み取りました！「${previewText}」をクリップボードにコピーしました`,
-        type: 'success',
-      })
-      return
-    } catch (err) {
-      dispatch({
-        message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
-        type: 'error',
-      })
-      return
-    }
-  }, [scanable, codeData, dispatch])
-
-  useEffect(() => {
-    // scanableがfalseになったら5秒後に再度スキャン可能にする
-    if (!scanable) {
-      const timer = setTimeout(() => {
-        setScannable(true)
-      }, 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [scanable])
+  const { videoRef, availableCameras, handleCameraChange } = useCameraCard()
 
   return (
     <Card title="QRコードリーダー">
@@ -80,7 +18,6 @@ export const CameraCard = () => {
         {availableCameras.length > 1 && (
           <select
             className={styles.cameraSelect}
-            value={currentCameraId}
             onChange={handleCameraChange}
           >
             {availableCameras.map((camera) => (

@@ -24,13 +24,21 @@ export const validatePin = (pin: string) => {
   return /^\d{4}$/.test(pin)
 }
 
-export const startScanning = async (video: HTMLVideoElement) => {
+// カメラの許可を取得
+export const requestCameraPermission = async () => {
   try {
-    // まず基本的なカメラの許可を取得
-    let stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' } // 背面カメラを優先
-    })
+    // ユーザーにカメラの許可を要求
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+    // ストリームを停止して、許可が得られたことを確認
+    stream.getTracks().forEach(track => track.stop())
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
+export const getCameraDevices = async () => {
+  try {
     // 許可が得られた後、利用可能なデバイスを確認
     const devices = await navigator.mediaDevices.enumerateDevices()
     const videoDevices = devices.filter(device => device.kind === 'videoinput')
@@ -39,24 +47,40 @@ export const startScanning = async (video: HTMLVideoElement) => {
       throw new Error('カメラデバイスが見つかりません')
     }
 
+    return videoDevices
+  } catch (error) {
+    console.error('カメラデバイスの取得に失敗しました:', error)
+    return []
+  }
+}
+
+export const getCameraStream = async (deviceId: string) => {
+  try {
+    // 指定されたデバイスIDでカメラストリームを取得
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { deviceId: { exact: deviceId } }
+    })
+    return stream
+  } catch (error) {
+    console.error('カメラストリームの取得に失敗しました:', error)
+    throw new Error('カメラストリームの取得に失敗しました')
+  }
+}
+
+export const findBackCamera = (videoDevices: MediaDeviceInfo[]) => {
     // 背面カメラを探す（許可後はラベルが見える）
     const backCamera = videoDevices.find(device =>
       device.label.toLowerCase().includes('back') ||
       device.label.toLowerCase().includes('rear') ||
       device.label.toLowerCase().includes('environment')
     )
+    return backCamera || null
+}
 
-    // 背面カメラが見つかった場合は、ストリームを切り替え
-    if (backCamera && backCamera.deviceId) {
-      // 現在のストリームを停止
-      stream.getTracks().forEach(track => track.stop())
-
-      // 背面カメラでストリームを再取得
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exact: backCamera.deviceId } }
-      })
-    }
-
+export const startPlayVideo = async (video: HTMLVideoElement, deviceId: string) => {
+  stopPlayingVideo(video) // 既存のストリームを停止
+  try {
+    const stream = await getCameraStream(deviceId)
     if (video) {
       video.autoplay = true
       video.playsInline = true
@@ -67,7 +91,7 @@ export const startScanning = async (video: HTMLVideoElement) => {
   }
 }
 
-export const stopScanning = (video: HTMLVideoElement) => {
+export const stopPlayingVideo = (video: HTMLVideoElement) => {
   if (video.srcObject) {
     const tracks = (video.srcObject as MediaStream).getTracks()
     tracks.forEach((track) => track.stop())
@@ -91,4 +115,22 @@ export const getImageDataByVideo = (video: HTMLVideoElement): ImageData | null =
 
   context.drawImage(video, 0, 0, canvas.width, canvas.height)
   return context.getImageData(0, 0, canvas.width, canvas.height)
+}
+
+
+export const getContentFromCodeData = (codeData: string): string => {
+  try {
+    // QRコードのデータがJSON形式であることを確認
+    const parsedData = JSON.parse(codeData)
+    return parsedData.content || codeData // contentフィールドが存在しない場合は元のデータを返す
+  } catch (e) {
+    return codeData // JSONパースに失敗した場合は元のデータを返す
+  }
+}
+
+export const getPreviewText = (content: string): string => {
+  if (content.length > 20) {
+    return content.substring(0, 20) + '...'
+  }
+  return content
 }
