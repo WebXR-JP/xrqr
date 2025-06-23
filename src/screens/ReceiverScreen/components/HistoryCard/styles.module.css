@@ -1,41 +1,57 @@
 .container {
   max-width: 300px;
   width: 100%;
-  overflow-y: scroll;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  height: 300px; /* 5 items max */
 }
 
 .historyItem {
-  padding: 1rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  width: 100%;
+  height: 60px;
+  box-sizing: border-box;
+  padding: 0.5rem 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
+
 .historyItem:hover {
-  background-color: #f3f4f6;
+  background-color: rgba(229, 231, 235, 0.5);
 }
 
 .historyItemHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
 }
 
 .historyItemTime {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #1e40af;
 }
 
 .historyItemPreview {
-  color: #1d4ed8;
+  color: #1e40af;
   overflow: hidden;
+  font-size: 0.85rem;
   text-overflow: ellipsis;
   display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
 
@@ -53,12 +69,31 @@
 }
 
 .deleteButton {
+  font-size: 0.75rem !important;
+  padding: 2px 8px !important;
+  background: transparent !important;
+  border: 1px solid #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+.deleteButton:hover {
   background: #ef4444 !important;
   border-color: #ef4444 !important;
   color: white !important;
 }
 
-.deleteButton:hover {
-  background: #dc2626 !important;
-  border-color: #dc2626 !important;
+.emptyMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.copyHint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.25rem;
 }

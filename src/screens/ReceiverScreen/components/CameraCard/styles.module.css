@@ -26,10 +26,10 @@
 }
 
 .description {
-  font-size: 0.9rem;
-  color: #64748b;
+  font-size: 0.75rem;
+  color: #6b7280;
   text-align: center;
-  margin: 0;
+  line-height: 1.25rem;
 }
 
 .cameraContainer {
