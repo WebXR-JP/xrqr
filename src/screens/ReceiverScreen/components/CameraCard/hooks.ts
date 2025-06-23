@@ -1,11 +1,13 @@
 import { useCallback } from "react"
 import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
+import { useHistory } from "~/providers/HistoryProvider"
 import { useToastDispatcher } from "~/providers/ToastDispatcher"
 import { copyToClipboard, getContentFromCodeData, getPreviewText } from "~/utils"
 
 export const useCameraCard = () => {
   const { dispatch } = useToastDispatcher()
+  const { addHistoryItem } = useHistory()
   const { videoRef, codeData, availableCameras, switchCamera } = useQRScanner()
 
   useAsync(async () => {
@@ -35,6 +37,13 @@ export const useCameraCard = () => {
       })
       return
     }
+
+    addHistoryItem({
+      id: crypto.randomUUID(),
+      content,
+      preview: getPreviewText(content),
+      timestamp: new Date().toISOString(),
+    })
   }, [codeData])
 
   const handleCameraChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
