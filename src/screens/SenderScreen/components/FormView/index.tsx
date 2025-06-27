@@ -23,15 +23,12 @@ export const FormView = ({ onSubmit }: Props) => {
         <label className={styles.label} htmlFor="content">
           テキスト
         </label>
-        <div className={styles.description}>
-          VRヘッドセットのクリップボードに送信したいテキストを入力してください
-        </div>
         <textarea
           id="content"
           className={styles.textArea}
           value={content}
           onChange={handleChangeContent}
-          placeholder="送信したいテキストを入力してください"
+          placeholder="VRヘッドセットのクリップボードに送信したいテキストを入力してください"
         />
       </div>
 
