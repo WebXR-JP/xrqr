@@ -9,6 +9,8 @@ export interface HistoryItem {
   content: string
   preview: string
   timestamp: string
+  isSecret?: boolean
+  encryptedContent?: string
 }
 
 export interface AppState {

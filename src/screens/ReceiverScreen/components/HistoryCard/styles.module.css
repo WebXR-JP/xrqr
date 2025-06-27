@@ -19,24 +19,54 @@
   width: 100%;
   height: 60px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+}
+
+.historyItemContent {
+  flex: 1;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s;
   display: flex;
   flex-direction: column;
-  margin: 0;
-  border-bottom: 1px solid #e5e7eb;
+  justify-content: center;
 }
 
-
-.historyItem:hover {
+.historyItemContent:hover {
   background-color: rgba(229, 231, 235, 0.5);
+}
+
+.deleteButtonArea {
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #e5e7eb;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .historyItemHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.historyItemInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lockIcon {
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .historyItemTime {
@@ -69,17 +99,27 @@
 }
 
 .deleteButton {
-  font-size: 0.75rem !important;
-  padding: 2px 8px !important;
+  padding: 4px !important;
   background: transparent !important;
-  border: 1px solid #ef4444 !important;
-  color: #ef4444 !important;
+  border: none !important;
+  line-height: 1 !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  border-radius: 4px !important;
 }
 
 .deleteButton:hover {
-  background: #ef4444 !important;
-  border-color: #ef4444 !important;
-  color: white !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.deleteIcon {
+  width: 16px;
+  height: 16px;
+  fill: #ef4444;
+}
+
+.deleteButton:hover .deleteIcon {
+  fill: #dc2626;
 }
 
 .emptyMessage {

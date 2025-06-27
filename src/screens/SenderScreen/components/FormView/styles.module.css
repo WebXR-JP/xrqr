@@ -52,6 +52,39 @@
   height: 1.2rem;
 }
 
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.passcodeInput {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.2rem;
+  width: 100px;
+  font-family: monospace;
+}
+
+.passcodeInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.errorText {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .contentWrapper {
     flex-direction: column;
