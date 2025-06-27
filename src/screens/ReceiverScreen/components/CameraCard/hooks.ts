@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
 import { useHistory } from "~/providers/HistoryProvider"
@@ -9,6 +9,8 @@ export const useCameraCard = () => {
   const { dispatch } = useToastDispatcher()
   const { addHistoryItem } = useHistory()
   const { videoRef, codeData, availableCameras, switchCamera } = useQRScanner()
+  const [encryptedData, setEncryptedData] = useState<string | null>(null)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
 
   useAsync(async () => {
     if (!codeData) return
@@ -16,6 +18,20 @@ export const useCameraCard = () => {
     try {
       content = getContentFromCodeData(codeData)
     } catch (err) {
+      if (err instanceof Error && err.message.includes('暗号化されています')) {
+        // 暗号化されたデータの場合はパスワード入力モーダルを表示
+        try {
+          const parsedData = JSON.parse(codeData)
+          setEncryptedData(parsedData.content)
+          setShowPasswordModal(true)
+        } catch (parseErr) {
+          dispatch({
+            message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
+            type: 'error',
+          })
+        }
+        return
+      }
       dispatch({
         message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。' + (err instanceof Error ? err.message : ''),
         type: 'error',
@@ -52,9 +68,45 @@ export const useCameraCard = () => {
     switchCamera(deviceId)
   }, [switchCamera])
 
+  const handleDecryptSuccess = useCallback(async (decryptedContent: string) => {
+    const currentEncryptedData = encryptedData
+    setEncryptedData(null)
+    
+    try {
+      await copyToClipboard(decryptedContent)
+      const previewText = getPreviewText(decryptedContent)
+      dispatch({
+        message: `暗号化されたQRコードを復号化しました！「${previewText}」をクリップボードにコピーしました`,
+        type: 'success',
+      })
+      
+      addHistoryItem({
+        id: crypto.randomUUID(),
+        content: decryptedContent,
+        preview: '****',
+        timestamp: new Date().toISOString(),
+        isSecret: true,
+        encryptedContent: currentEncryptedData || undefined,
+      })
+    } catch (err) {
+      dispatch({
+        message: 'クリップボードへのコピーに失敗しました。',
+        type: 'error',
+      })
+    }
+  }, [dispatch, addHistoryItem, encryptedData])
+
+  const handlePasswordModalCancel = useCallback(() => {
+    setEncryptedData(null)
+  }, [])
+
   return {
     videoRef,
     availableCameras,
     handleCameraChange,
+    encryptedData,
+    showPasswordModal,
+    handleDecryptSuccess,
+    handlePasswordModalCancel,
   }
 }

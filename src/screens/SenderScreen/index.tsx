@@ -3,18 +3,28 @@ import { useCallback, useState } from 'react'
 import { FormView } from './components/FormView'
 import { QRView } from './components/QRView'
 import { Card } from '~/components/Card'
+import { encryptText } from '~/utils/crypto'
 import styles from './styles.module.css'
 
 export const SenderScreen = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
 
-  const handleSubmit = useCallback(async (content: string) => {
+  const handleSubmit = useCallback(async (content: string, passcode?: string) => {
     try {
+      const isSecure = !!passcode
+      let processedContent = content
+
+      // 秘匿情報の場合は暗号化
+      if (isSecure && passcode) {
+        processedContent = encryptText(content, passcode)
+      }
+
       const qrData = JSON.stringify({
-        content,
-        isSecret: false,
+        content: processedContent,
+        isSecret: isSecure,
         timestamp: new Date().toISOString(),
-        encrypted: false,
+        encrypted: isSecure,
+        // パスワードはQRコードに含めない（セキュリティ向上）
       })
 
       const qrCode = await QRCode.toDataURL(qrData, {

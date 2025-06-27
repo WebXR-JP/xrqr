@@ -122,8 +122,18 @@ export const getContentFromCodeData = (codeData: string): string => {
   try {
     // QRコードのデータがJSON形式であることを確認
     const parsedData = JSON.parse(codeData)
+    
+    // 暗号化されたデータの場合は復号化が必要
+    if (parsedData.encrypted && parsedData.isSecret) {
+      // 暗号化されたデータの場合はパスワード入力を促す
+      throw new Error('このQRコードは暗号化されています。パスワードが必要です。')
+    }
+    
     return parsedData.content || codeData // contentフィールドが存在しない場合は元のデータを返す
   } catch (e) {
+    if (e instanceof Error && e.message.includes('暗号化されています')) {
+      throw e // 暗号化エラーはそのまま投げる
+    }
     return codeData // JSONパースに失敗した場合は元のデータを返す
   }
 }
