@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react"
+import { useTranslation } from 'react-i18next'
 import { Button } from "~/components/Button"
 import { copyToClipboard } from "~/utils"
 import { Card } from "~/components/Card"
@@ -8,6 +9,7 @@ import { PasswordInputModal } from "../PasswordInputModal"
 import styles from "./styles.module.css"
 
 export const HistoryCard = () => {
+  const { t } = useTranslation();
   const { history, removeHistoryItem } = useHistory()
   const { dispatch } = useToastDispatcher()
   const [selectedSecretItem, setSelectedSecretItem] = useState<string | null>(null)
@@ -16,12 +18,12 @@ export const HistoryCard = () => {
     try {
       await copyToClipboard(content)
       dispatch({
-        message: 'クリップボードにコピーしました',
+        message: t('receiver.clipboardCopied'),
         type: 'success'
       })
     } catch (error) {
       dispatch({
-        message: 'コピーに失敗しました',
+        message: t('common.copyFailed'),
         type: 'error'
       })
     }
@@ -49,7 +51,7 @@ export const HistoryCard = () => {
 
   return (
     <>
-      <Card title="読み込み履歴" className={styles.container}>
+      <Card title={t('receiver.historyTitle')} className={styles.container}>
         <div className={styles.historyList}>
           {history.map((item) => (
             <div key={item.id} className={styles.historyItem}>
@@ -88,12 +90,12 @@ export const HistoryCard = () => {
           ))}
           {history.length === 0 && (
             <div className={styles.emptyMessage}>
-              履歴はありません
+              {t('receiver.noHistory')}
             </div>
           )}
         </div>
         <p className={styles.copyHint}>
-          クリックで内容をコピーできます。
+          {t('receiver.historyInstructions')}
         </p>
       </Card>
 

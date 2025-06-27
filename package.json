@@ -22,10 +22,12 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
+    "i18next": "^25.2.1",
     "jsqr": "^1.4.0",
     "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "^15.5.3",
     "react-use": "^17.6.0"
   }
 }

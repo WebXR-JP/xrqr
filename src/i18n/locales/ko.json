@@ -1,0 +1,56 @@
+{
+  "common": {
+    "cancel": "취소",
+    "copy": "복사",
+    "copied": "복사됨",
+    "copyFailed": "복사 실패",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "retry": "다시 시도"
+  },
+  "header": {
+    "subtitle": "PC・스마트폰에서 VR 헤드셋으로 즉시 전송 - QR 코드로 간편 복사"
+  },
+  "footer": {
+    "copyright": "© {{year}} WebXR-JP",
+    "github": "GitHub"
+  },
+  "sender": {
+    "textLabel": "텍스트",
+    "textPlaceholder": "VR 헤드셋 클립보드로 전송할 텍스트를 입력하세요",
+    "secureShare": "보안 공유 (4자리 패스코드)",
+    "secureShareDescription": "중요한 정보를 암호화하여 QR 코드에 포함합니다. 수신측에서 동일한 패스코드가 필요합니다.",
+    "passcodeLabel": "4자리 패스코드",
+    "generateQR": "QR 코드 생성",
+    "qrGeneratorTitle": "QR 코드 생성기",
+    "generatedQRTitle": "생성된 QR 코드",
+    "qrInstructions": "VR 헤드셋에서 xrqr.net을 열고 이 QR 코드를 스캔하면 클립보드에 복사됩니다",
+    "recreateQR": "QR 다시 만들기"
+  },
+  "receiver": {
+    "qrReaderTitle": "QR 코드 리더",
+    "qrReaderDescription": "스마트폰이나 PC의 QR 코드를 읽어 클립보드에 복사합니다.",
+    "passwordModalTitle": "비밀번호를 입력하세요",
+    "passwordModalDescription": "이 QR 코드는 암호화되어 있습니다. 4자리 비밀번호를 입력하여 복호화하세요.",
+    "passwordPlaceholder": "1234",
+    "passwordValidationError": "4자리 비밀번호를 입력하세요",
+    "passwordError": "비밀번호가 틀렸습니다",
+    "decrypting": "복호화 중...",
+    "decrypt": "복호화",
+    "historyTitle": "읽기 기록",
+    "clipboardCopied": "클립보드에 복사되었습니다",
+    "noHistory": "기록이 없습니다",
+    "historyInstructions": "클릭하면 내용을 복사할 수 있습니다.",
+    "qrScanSuccess": "QR 코드를 읽었습니다! \"{{content}}\"를 클립보드에 복사했습니다",
+    "encryptedQrDecryptSuccess": "암호화된 QR 코드를 복호화했습니다! \"{{content}}\"를 클립보드에 복사했습니다",
+    "qrScanError": "QR 코드 읽기에 실패했습니다. 유효하지 않은 데이터일 수 있습니다.",
+    "clipboardCopyError": "클립보드 복사에 실패했습니다."
+  },
+  "errors": {
+    "qrScanFailed": "QR 코드 스캔에 실패했습니다",
+    "decryptionFailed": "복호화에 실패했습니다",
+    "invalidQRCode": "유효하지 않은 QR 코드입니다",
+    "cameraAccessDenied": "카메라 접근이 거부되었습니다",
+    "unsupportedBrowser": "지원되지 않는 브라우저입니다"
+  }
+}

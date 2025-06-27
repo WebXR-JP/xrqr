@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import { useTranslation } from 'react-i18next'
 import { Button } from "~/components/Button"
 import styles from "./styles.module.css"
 
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export const FormView = ({ onSubmit }: Props) => {
+  const { t } = useTranslation();
   const [content, setContent] = useState('')
   const [passcode, setPasscode] = useState('')
   const [isSecure, setIsSecure] = useState(false)
@@ -35,14 +37,14 @@ export const FormView = ({ onSubmit }: Props) => {
     <div className={styles.form}>
       <div className={styles.inputGroup}>
         <label className={styles.label} htmlFor="content">
-          テキスト
+          {t('sender.textLabel')}
         </label>
         <textarea
           id="content"
           className={styles.textArea}
           value={content}
           onChange={handleChangeContent}
-          placeholder="VRヘッドセットのクリップボードに送信したいテキストを入力してください"
+          placeholder={t('sender.textPlaceholder')}
         />
       </div>
 
@@ -54,17 +56,17 @@ export const FormView = ({ onSubmit }: Props) => {
             onChange={handleToggleSecure}
             className={styles.checkbox}
           />
-          セキュアな共有（4桁パスコード）
+          {t('sender.secureShare')}
         </label>
         <small className={styles.description}>
-          重要な情報を暗号化してQRコードに含めます。受信側で同じパスコードが必要になります。
+          {t('sender.secureShareDescription')}
         </small>
       </div>
 
       {isSecure && (
         <div className={styles.inputGroup}>
           <label className={styles.label} htmlFor="passcode">
-            4桁パスコード
+            {t('sender.passcodeLabel')}
           </label>
           <input
             id="passcode"
@@ -88,7 +90,7 @@ export const FormView = ({ onSubmit }: Props) => {
         onClick={handleSubmit}
         disabled={!content.trim() || (isSecure && passcode.length !== 4)}
       >
-        QRコード生成
+        {t('sender.generateQR')}
       </Button>
     </div>
   )
