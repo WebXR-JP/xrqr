@@ -1,5 +1,6 @@
 import QRCode from 'qrcode'
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FormView } from './components/FormView'
 import { QRView } from './components/QRView'
 import { Card } from '~/components/Card'
@@ -7,6 +8,7 @@ import { encryptText } from '~/utils/crypto'
 import styles from './styles.module.css'
 
 export const SenderScreen = () => {
+  const { t } = useTranslation();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
 
   const handleSubmit = useCallback(async (content: string, passcode?: string) => {
@@ -44,7 +46,7 @@ export const SenderScreen = () => {
   }, [setQrCodeUrl])
 
   return (
-    <Card title="QRコード生成" className={styles.container}>
+    <Card title={t('sender.qrGeneratorTitle')} className={styles.container}>
       {!qrCodeUrl ? (
         <FormView onSubmit={handleSubmit} />
       ) : (

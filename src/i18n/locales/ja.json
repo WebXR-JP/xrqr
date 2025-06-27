@@ -1,0 +1,56 @@
+{
+  "common": {
+    "cancel": "キャンセル",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copyFailed": "コピーに失敗しました",
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "retry": "再試行"
+  },
+  "header": {
+    "subtitle": "PC・スマホからVRゴーグルへ瞬間転送 - QRコードでかんたんコピー"
+  },
+  "footer": {
+    "copyright": "© {{year}} WebXR-JP",
+    "github": "GitHub"
+  },
+  "sender": {
+    "textLabel": "テキスト",
+    "textPlaceholder": "VRヘッドセットのクリップボードに送信したいテキストを入力してください",
+    "secureShare": "セキュアな共有（4桁パスコード）",
+    "secureShareDescription": "重要な情報を暗号化してQRコードに含めます。受信側で同じパスコードが必要になります。",
+    "passcodeLabel": "4桁パスコード",
+    "generateQR": "QRコード生成",
+    "qrGeneratorTitle": "QRコード生成",
+    "generatedQRTitle": "生成されたQRコード",
+    "qrInstructions": "VRゴーグルで xrqr.net を開いてこのQRコードをスキャンすると、クリップボードにコピーされます",
+    "recreateQR": "QRを作り直す"
+  },
+  "receiver": {
+    "qrReaderTitle": "QRコードリーダー",
+    "qrReaderDescription": "スマホやPCのQRコードを読み取って、クリップボードにコピーします。",
+    "passwordModalTitle": "パスワードを入力してください",
+    "passwordModalDescription": "このQRコードは暗号化されています。4桁のパスワードを入力して復号化してください。",
+    "passwordPlaceholder": "1234",
+    "passwordValidationError": "4桁のパスワードを入力してください",
+    "passwordError": "パスワードが間違っています",
+    "decrypting": "復号化中...",
+    "decrypt": "復号化",
+    "historyTitle": "読み込み履歴",
+    "clipboardCopied": "クリップボードにコピーしました",
+    "noHistory": "履歴はありません",
+    "historyInstructions": "クリックで内容をコピーできます。",
+    "qrScanSuccess": "QRコードを読み取りました！「{{content}}」をクリップボードにコピーしました",
+    "encryptedQrDecryptSuccess": "暗号化されたQRコードを復号化しました！「{{content}}」をクリップボードにコピーしました",
+    "qrScanError": "QRコードの読み取りに失敗しました。無効なデータかもしれません。",
+    "clipboardCopyError": "クリップボードへのコピーに失敗しました。"
+  },
+  "errors": {
+    "qrScanFailed": "QRコードの読み取りに失敗しました",
+    "decryptionFailed": "復号化に失敗しました",
+    "invalidQRCode": "無効なQRコードです",
+    "cameraAccessDenied": "カメラへのアクセスが拒否されました",
+    "unsupportedBrowser": "お使いのブラウザはサポートされていません"
+  }
+}

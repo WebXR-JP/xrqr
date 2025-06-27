@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '~/components/Button'
 import { decryptText } from '~/utils/crypto'
 import styles from './styles.module.css'
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }: Props) => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isDecrypting, setIsDecrypting] = useState(false)
@@ -22,7 +24,7 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
 
   const handleDecrypt = useCallback(async () => {
     if (password.length !== 4) {
-      setError('4桁のパスワードを入力してください')
+      setError(t('receiver.passwordValidationError'))
       return
     }
 
@@ -33,7 +35,7 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
       const decryptedContent = decryptText(encryptedData, password)
       onDecryptSuccess(decryptedContent)
     } catch (err) {
-      setError('パスワードが間違っています')
+      setError(t('receiver.passwordError'))
     } finally {
       setIsDecrypting(false)
     }
@@ -50,9 +52,9 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <h3 className={styles.title}>パスワードを入力してください</h3>
+        <h3 className={styles.title}>{t('receiver.passwordModalTitle')}</h3>
         <p className={styles.description}>
-          このQRコードは暗号化されています。4桁のパスワードを入力して復号化してください。
+          {t('receiver.passwordModalDescription')}
         </p>
 
         <div className={styles.inputGroup}>
@@ -65,7 +67,7 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
             value={password}
             onChange={handlePasswordChange}
             onKeyDown={handleKeyDown}
-            placeholder="1234"
+            placeholder={t('receiver.passwordPlaceholder')}
             autoComplete="one-time-code"
             data-1p-ignore
             data-lpignore="true"
@@ -85,7 +87,7 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
             onClick={onCancel}
             disabled={isDecrypting}
           >
-            キャンセル
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -93,7 +95,7 @@ export const PasswordInputModal = ({ encryptedData, onDecryptSuccess, onCancel }
             onClick={handleDecrypt}
             disabled={password.length !== 4 || isDecrypting}
           >
-            {isDecrypting ? '復号化中...' : '復号化'}
+            {isDecrypting ? t('receiver.decrypting') : t('receiver.decrypt')}
           </Button>
         </div>
       </div>

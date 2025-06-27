@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import { useTranslation } from 'react-i18next'
 import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
 import { useHistory } from "~/providers/HistoryProvider"
@@ -6,6 +7,7 @@ import { useToastDispatcher } from "~/providers/ToastDispatcher"
 import { copyToClipboard, getContentFromCodeData, getPreviewText } from "~/utils"
 
 export const useCameraCard = () => {
+  const { t } = useTranslation();
   const { dispatch } = useToastDispatcher()
   const { addHistoryItem } = useHistory()
   const { videoRef, codeData, availableCameras, switchCamera } = useQRScanner()
@@ -26,14 +28,14 @@ export const useCameraCard = () => {
           setShowPasswordModal(true)
         } catch (parseErr) {
           dispatch({
-            message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。',
+            message: t('receiver.qrScanError'),
             type: 'error',
           })
         }
         return
       }
       dispatch({
-        message: 'QRコードの読み取りに失敗しました。無効なデータかもしれません。' + (err instanceof Error ? err.message : ''),
+        message: t('receiver.qrScanError') + (err instanceof Error ? err.message : ''),
         type: 'error',
       })
       return
@@ -43,12 +45,12 @@ export const useCameraCard = () => {
       await copyToClipboard(content)
       const previewText = getPreviewText(content)
       dispatch({
-        message: `QRコードを読み取りました！「${previewText}」をクリップボードにコピーしました`,
+        message: t('receiver.qrScanSuccess', { content: previewText }),
         type: 'success',
       })
     } catch (err) {
       dispatch({
-        message: 'クリップボードへのコピーに失敗しました。',
+        message: t('receiver.clipboardCopyError'),
         type: 'error',
       })
       return
@@ -76,7 +78,7 @@ export const useCameraCard = () => {
       await copyToClipboard(decryptedContent)
       const previewText = getPreviewText(decryptedContent)
       dispatch({
-        message: `暗号化されたQRコードを復号化しました！「${previewText}」をクリップボードにコピーしました`,
+        message: t('receiver.encryptedQrDecryptSuccess', { content: previewText }),
         type: 'success',
       })
       
@@ -90,7 +92,7 @@ export const useCameraCard = () => {
       })
     } catch (err) {
       dispatch({
-        message: 'クリップボードへのコピーに失敗しました。',
+        message: t('receiver.clipboardCopyError'),
         type: 'error',
       })
     }

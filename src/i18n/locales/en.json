@@ -1,0 +1,56 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Failed to copy",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry"
+  },
+  "header": {
+    "subtitle": "Instant transfer from PC/smartphone to VR headset - Easy copy with QR code"
+  },
+  "footer": {
+    "copyright": "© {{year}} WebXR-JP",
+    "github": "GitHub"
+  },
+  "sender": {
+    "textLabel": "Text",
+    "textPlaceholder": "Enter the text you want to send to the VR headset clipboard",
+    "secureShare": "Secure sharing (4-digit passcode)",
+    "secureShareDescription": "Encrypt important information and include it in the QR code. The same passcode will be required on the receiving side.",
+    "passcodeLabel": "4-digit passcode",
+    "generateQR": "Generate QR Code",
+    "qrGeneratorTitle": "QR Code Generator",
+    "generatedQRTitle": "Generated QR Code",
+    "qrInstructions": "Open xrqr.net on your VR headset and scan this QR code to copy to clipboard",
+    "recreateQR": "Recreate QR"
+  },
+  "receiver": {
+    "qrReaderTitle": "QR Code Reader",
+    "qrReaderDescription": "Scan QR codes from smartphones and PCs to copy to clipboard.",
+    "passwordModalTitle": "Enter Password",
+    "passwordModalDescription": "This QR code is encrypted. Enter the 4-digit password to decrypt.",
+    "passwordPlaceholder": "1234",
+    "passwordValidationError": "Enter 4-digit password",
+    "passwordError": "Incorrect password",
+    "decrypting": "Decrypting...",
+    "decrypt": "Decrypt",
+    "historyTitle": "Scan History",
+    "clipboardCopied": "Copied to clipboard",
+    "noHistory": "No history available",
+    "historyInstructions": "Click to copy content.",
+    "qrScanSuccess": "QR code scanned! \"{{content}}\" copied to clipboard",
+    "encryptedQrDecryptSuccess": "Encrypted QR code decrypted! \"{{content}}\" copied to clipboard",
+    "qrScanError": "Failed to scan QR code. Invalid data.",
+    "clipboardCopyError": "Failed to copy to clipboard."
+  },
+  "errors": {
+    "qrScanFailed": "Failed to scan QR code",
+    "decryptionFailed": "Decryption failed",
+    "invalidQRCode": "Invalid QR code",
+    "cameraAccessDenied": "Camera access denied",
+    "unsupportedBrowser": "Your browser is not supported"
+  }
+}
