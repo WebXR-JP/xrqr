@@ -5,7 +5,7 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
   background: #059669;
@@ -17,6 +17,7 @@
   animation: toastSlideUp 0.3s ease-out;
   max-width: 90vw;
   word-break: break-all;
+  align-items: stretch;
 }
 
 .toastIcon {
@@ -32,9 +33,43 @@
   flex-shrink: 0;
 }
 
+.toastContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .toastMessage {
   flex: 1;
   min-width: 0;
+}
+
+.toastButtons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.toastButton {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.toastButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.toastButton:active {
+  transform: scale(0.98);
 }
 
 @keyframes toastSlideUp {

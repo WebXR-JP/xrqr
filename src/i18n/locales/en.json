@@ -44,7 +44,8 @@
     "qrScanSuccess": "QR code scanned! \"{{content}}\" copied to clipboard",
     "encryptedQrDecryptSuccess": "Encrypted QR code decrypted! \"{{content}}\" copied to clipboard",
     "qrScanError": "Failed to scan QR code. Invalid data.",
-    "clipboardCopyError": "Failed to copy to clipboard."
+    "clipboardCopyError": "Failed to copy to clipboard.",
+    "openInBrowser": "Open in Browser"
   },
   "errors": {
     "qrScanFailed": "Failed to scan QR code",

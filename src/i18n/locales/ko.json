@@ -44,7 +44,8 @@
     "qrScanSuccess": "QR 코드를 읽었습니다! \"{{content}}\"를 클립보드에 복사했습니다",
     "encryptedQrDecryptSuccess": "암호화된 QR 코드를 복호화했습니다! \"{{content}}\"를 클립보드에 복사했습니다",
     "qrScanError": "QR 코드 읽기에 실패했습니다. 유효하지 않은 데이터일 수 있습니다.",
-    "clipboardCopyError": "클립보드 복사에 실패했습니다."
+    "clipboardCopyError": "클립보드 복사에 실패했습니다.",
+    "openInBrowser": "브라우저에서 열기"
   },
   "errors": {
     "qrScanFailed": "QR 코드 스캔에 실패했습니다",
