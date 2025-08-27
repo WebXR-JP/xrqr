@@ -144,3 +144,12 @@ export const getPreviewText = (content: string): string => {
   }
   return content
 }
+
+export const isURL = (text: string): boolean => {
+  try {
+    const url = new URL(text)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}

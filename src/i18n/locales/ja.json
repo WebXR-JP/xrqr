@@ -44,7 +44,8 @@
     "qrScanSuccess": "QRコードを読み取りました！「{{content}}」をクリップボードにコピーしました",
     "encryptedQrDecryptSuccess": "暗号化されたQRコードを復号化しました！「{{content}}」をクリップボードにコピーしました",
     "qrScanError": "QRコードの読み取りに失敗しました。無効なデータかもしれません。",
-    "clipboardCopyError": "クリップボードへのコピーに失敗しました。"
+    "clipboardCopyError": "クリップボードへのコピーに失敗しました。",
+    "openInBrowser": "ブラウザで開く"
   },
   "errors": {
     "qrScanFailed": "QRコードの読み取りに失敗しました",

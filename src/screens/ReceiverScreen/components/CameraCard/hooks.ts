@@ -4,11 +4,11 @@ import { useAsync } from "react-use"
 import { useQRScanner } from "~/hooks/useQRScanner"
 import { useHistory } from "~/providers/HistoryProvider"
 import { useToastDispatcher } from "~/providers/ToastDispatcher"
-import { copyToClipboard, getContentFromCodeData, getPreviewText } from "~/utils"
+import { copyToClipboard, getContentFromCodeData, getPreviewText, isURL } from "~/utils"
 
 export const useCameraCard = () => {
   const { t } = useTranslation();
-  const { dispatch } = useToastDispatcher()
+  const { dispatch, closeToast } = useToastDispatcher()
   const { addHistoryItem } = useHistory()
   const { videoRef, codeData, availableCameras, switchCamera } = useQRScanner()
   const [encryptedData, setEncryptedData] = useState<string | null>(null)
@@ -44,10 +44,34 @@ export const useCameraCard = () => {
     try {
       await copyToClipboard(content)
       const previewText = getPreviewText(content)
-      dispatch({
-        message: t('receiver.qrScanSuccess', { content: previewText }),
-        type: 'success',
-      })
+      
+      // URLかどうかをチェック
+      if (isURL(content)) {
+        dispatch({
+          message: t('receiver.qrScanSuccess', { content: previewText }),
+          type: 'success',
+          buttons: [
+            {
+              text: t('receiver.openInBrowser'),
+              onClick: () => {
+                window.open(content, '_blank')
+                closeToast()
+              }
+            },
+            {
+              text: t('common.cancel'),
+              onClick: () => {
+                closeToast()
+              }
+            }
+          ]
+        })
+      } else {
+        dispatch({
+          message: t('receiver.qrScanSuccess', { content: previewText }),
+          type: 'success',
+        })
+      }
     } catch (err) {
       dispatch({
         message: t('receiver.clipboardCopyError'),
@@ -62,7 +86,7 @@ export const useCameraCard = () => {
       preview: getPreviewText(content),
       timestamp: new Date().toISOString(),
     })
-  }, [codeData])
+  }, [codeData, dispatch, addHistoryItem, closeToast, t])
 
   const handleCameraChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const deviceId = event.target.value
@@ -77,10 +101,34 @@ export const useCameraCard = () => {
     try {
       await copyToClipboard(decryptedContent)
       const previewText = getPreviewText(decryptedContent)
-      dispatch({
-        message: t('receiver.encryptedQrDecryptSuccess', { content: previewText }),
-        type: 'success',
-      })
+      
+      // URLかどうかをチェック
+      if (isURL(decryptedContent)) {
+        dispatch({
+          message: t('receiver.encryptedQrDecryptSuccess', { content: previewText }),
+          type: 'success',
+          buttons: [
+            {
+              text: t('receiver.openInBrowser'),
+              onClick: () => {
+                window.open(decryptedContent, '_blank')
+                closeToast()
+              }
+            },
+            {
+              text: t('common.cancel'),
+              onClick: () => {
+                closeToast()
+              }
+            }
+          ]
+        })
+      } else {
+        dispatch({
+          message: t('receiver.encryptedQrDecryptSuccess', { content: previewText }),
+          type: 'success',
+        })
+      }
       
       addHistoryItem({
         id: crypto.randomUUID(),
@@ -96,7 +144,7 @@ export const useCameraCard = () => {
         type: 'error',
       })
     }
-  }, [dispatch, addHistoryItem, encryptedData])
+  }, [dispatch, addHistoryItem, encryptedData, closeToast, t])
 
   const handlePasswordModalCancel = useCallback(() => {
     setEncryptedData(null)

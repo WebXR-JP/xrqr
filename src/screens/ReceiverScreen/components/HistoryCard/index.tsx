@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 import { useTranslation } from 'react-i18next'
 import { Button } from "~/components/Button"
-import { copyToClipboard } from "~/utils"
+import { copyToClipboard, isURL } from "~/utils"
 import { Card } from "~/components/Card"
 import { useHistory } from "~/providers/HistoryProvider"
 import { useToastDispatcher } from "~/providers/ToastDispatcher"
@@ -11,16 +11,40 @@ import styles from "./styles.module.css"
 export const HistoryCard = () => {
   const { t } = useTranslation();
   const { history, removeHistoryItem } = useHistory()
-  const { dispatch } = useToastDispatcher()
+  const { dispatch, closeToast } = useToastDispatcher()
   const [selectedSecretItem, setSelectedSecretItem] = useState<string | null>(null)
 
   const handleCopyToClipboard = async (content: string) => {
     try {
       await copyToClipboard(content)
-      dispatch({
-        message: t('receiver.clipboardCopied'),
-        type: 'success'
-      })
+      
+      // URLかどうかをチェック
+      if (isURL(content)) {
+        dispatch({
+          message: t('receiver.clipboardCopied'),
+          type: 'success',
+          buttons: [
+            {
+              text: t('receiver.openInBrowser'),
+              onClick: () => {
+                window.open(content, '_blank')
+                closeToast()
+              }
+            },
+            {
+              text: t('common.cancel'),
+              onClick: () => {
+                closeToast()
+              }
+            }
+          ]
+        })
+      } else {
+        dispatch({
+          message: t('receiver.clipboardCopied'),
+          type: 'success'
+        })
+      }
     } catch (error) {
       dispatch({
         message: t('common.copyFailed'),
