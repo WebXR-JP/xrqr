@@ -25,7 +25,10 @@
     "qrGeneratorTitle": "QRコード生成",
     "generatedQRTitle": "生成されたQRコード",
     "qrInstructions": "VRゴーグルで xrqr.net を開いてこのQRコードをスキャンすると、クリップボードにコピーされます",
-    "recreateQR": "QRを作り直す"
+    "recreateQR": "QRを作り直す",
+    "copyShareLink": "このQRコードを他の人と共有",
+    "shareUrlCopied": "共有用のURLをコピーしました",
+    "shareUrlCopyFailed": "共有URLのコピーに失敗しました"
   },
   "receiver": {
     "qrReaderTitle": "QRコードリーダー",
