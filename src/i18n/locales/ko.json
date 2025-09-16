@@ -25,7 +25,10 @@
     "qrGeneratorTitle": "QR 코드 생성기",
     "generatedQRTitle": "생성된 QR 코드",
     "qrInstructions": "VR 헤드셋에서 xrqr.net을 열고 이 QR 코드를 스캔하면 클립보드에 복사됩니다",
-    "recreateQR": "QR 다시 만들기"
+    "recreateQR": "QR 다시 만들기",
+    "copyShareLink": "이 QR 코드를 다른 사람과 공유",
+    "shareUrlCopied": "공유용 URL이 클립보드에 복사되었습니다",
+    "shareUrlCopyFailed": "공유 URL 복사에 실패했습니다"
   },
   "receiver": {
     "qrReaderTitle": "QR 코드 리더",

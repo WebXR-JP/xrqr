@@ -25,7 +25,10 @@
     "qrGeneratorTitle": "QR Code Generator",
     "generatedQRTitle": "Generated QR Code",
     "qrInstructions": "Open xrqr.net on your VR headset and scan this QR code to copy to clipboard",
-    "recreateQR": "Recreate QR"
+    "recreateQR": "Recreate QR",
+    "copyShareLink": "Share this QR code with others",
+    "shareUrlCopied": "Sharing URL copied to clipboard",
+    "shareUrlCopyFailed": "Failed to copy sharing URL"
   },
   "receiver": {
     "qrReaderTitle": "QR Code Reader",
